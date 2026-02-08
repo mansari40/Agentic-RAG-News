@@ -12,6 +12,9 @@ dependencies = [
   "tenacity>=8.3.0",
   "qdrant-client>=1.10.0",
   "openai>=1.40.0",
+  "structlog>=24.1.0",
+  "tiktoken>=0.7.0",
+  "pre-commit>=4.0.0",
 
   # PostgreSQL
   "sqlalchemy>=2.0.30",
@@ -62,7 +65,7 @@ testpaths = ["tests"]
 addopts = "-q"
 
 
-# Build system 
+# Build system
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]

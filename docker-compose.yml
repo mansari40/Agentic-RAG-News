@@ -5,8 +5,8 @@ services:
     image: qdrant/qdrant:v1.11.5
     container_name: agentic_news_rag_qdrant
     ports:
-      - "7333:6333"  
-      - "7334:6334"  
+      - "7333:6333"
+      - "7334:6334"
     volumes:
       - ./data/qdrant:/qdrant/storage
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
       POSTGRES_USER: raguser
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5433:5432"  
+      - "5433:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     restart: unless-stopped
