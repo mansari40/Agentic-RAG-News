@@ -2,7 +2,7 @@ from rag_baseline.configuration import settings
 from rag_baseline.domain_models import RetrievalResult
 from rag_baseline.embedding.text_embedder import EmbeddingService
 from rag_baseline.retrieval.retrieval_cache import RetrievalCache
-from rag_baseline.vector_store.qdrant import QdrantRepository
+from vector_store.qdrant import QdrantRepository
 
 
 class SemanticRetriever:
