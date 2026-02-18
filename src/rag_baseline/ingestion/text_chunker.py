@@ -22,6 +22,10 @@ class TextChunker:
                     article_id=article.article_id,
                     content=chunk_text,
                     chunk_index=index,
+                    published_at=article.published_at,
+                    source=article.source,
+                    language=article.language,
+                    keywords=article.keywords,
                 )
             )
 

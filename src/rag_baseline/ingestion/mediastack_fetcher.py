@@ -49,9 +49,10 @@ class MediaStackClient:
     ]
 
     def fetch_latest_articles(self, limit: int = 25, days_back: int = 30) -> list[NewsArticle]:
-        all_articles = {}
+        all_articles: dict[str, NewsArticle] = {}
+        keyword_map: dict[str, list[str]] = {}
 
-        #  last 30 days only
+        # Calculate date range - last 30 days only
         date_from = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
         date_to = datetime.now().strftime("%Y-%m-%d")
         logger.info(f"Fetching articles from {date_from} to {date_to}")
@@ -79,7 +80,15 @@ class MediaStackClient:
 
                 for item in data:
                     url = item.get("url")
-                    if not url or url in all_articles:
+                    if not url:
+                        continue
+
+                    # Track keywords for the article
+                    if url not in keyword_map:
+                        keyword_map[url] = []
+                    keyword_map[url].append(keyword)
+
+                    if url in all_articles:
                         continue
 
                     text_content = item.get("content") or item.get("description")
@@ -100,6 +109,9 @@ class MediaStackClient:
                         source=item.get("source", "unknown"),
                         published_at=published_at,
                         url=url,
+                        language=item.get("language", "en"),
+                        country=item.get("country", "unknown"),
+                        keywords=keyword_map.get(url, []),
                     )
 
             except Exception as e:
