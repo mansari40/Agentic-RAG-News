@@ -1,9 +1,13 @@
 import logging
 from datetime import datetime, timedelta
+from typing import Any
 
 import requests
 from rag_baseline.configuration import settings
+from rag_baseline.custom_exceptions import ExternalAPIError
 from rag_baseline.domain_models import NewsArticle
+from rag_baseline.utils.retry_utils import retry_with_backoff
+from requests.exceptions import ConnectionError, RequestException, Timeout
 
 logger = logging.getLogger(__name__)
 
@@ -48,19 +52,58 @@ class MediaStackClient:
         "Waldschäden",
     ]
 
+    @retry_with_backoff(  # type: ignore[misc]
+        max_retries=3,
+        initial_delay=2.0,
+        backoff_factor=2.0,
+        exceptions=(RequestException, Timeout, ConnectionError),
+    )
+    def _fetch_keyword(self, keyword: str, params: dict[str, Any]) -> list[dict[str, Any]]:
+        """Fetch articles for a single keyword with retry logic"""
+        try:
+            response = requests.get(self.BASE_URL, params=params, timeout=30)
+
+            if response.status_code == 401:
+                raise ExternalAPIError("Invalid MediaStack API key")
+            elif response.status_code == 429:
+                raise ExternalAPIError("MediaStack rate limit exceeded")
+            elif response.status_code != 200:
+                logger.warning(
+                    f"MediaStack API error for '{keyword}': "
+                    f"{response.status_code} - {response.text}"
+                )
+                return []
+
+            data: list[dict[str, Any]] = response.json().get("data", [])
+            return data
+
+        except Timeout:
+            logger.warning(f"Timeout fetching keyword '{keyword}'")
+            raise
+        except ConnectionError:
+            logger.warning(f"Connection error fetching keyword '{keyword}'")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error fetching keyword '{keyword}': {e}")
+            return []
+
     def fetch_latest_articles(self, limit: int = 25, days_back: int = 30) -> list[NewsArticle]:
+        """
+        Fetch articles with error handling and graceful degradation.
+
+        """
         all_articles: dict[str, NewsArticle] = {}
         keyword_map: dict[str, list[str]] = {}
 
-        # Calculate date range - last 30 days only
         date_from = (datetime.now() - timedelta(days=days_back)).strftime("%Y-%m-%d")
         date_to = datetime.now().strftime("%Y-%m-%d")
         logger.info(f"Fetching articles from {date_from} to {date_to}")
 
-        for keyword in self.TIMBER_KEYWORDS:
-            logger.info(f"Fetching articles for keyword: '{keyword}'...")
+        successful_keywords = 0
+        failed_keywords = 0
 
-            params = {
+        for keyword in self.TIMBER_KEYWORDS:
+            params: dict[str, Any] = {
                 "access_key": settings.mediastack_api_key,
                 "keywords": keyword,
                 "languages": "en,de",
@@ -69,21 +112,15 @@ class MediaStackClient:
             }
 
             try:
-                response = requests.get(self.BASE_URL, params=params)
-
-                if response.status_code != 200:
-                    logger.warning(f"Failed for keyword '{keyword}': {response.text}")
-                    continue
-
-                data = response.json().get("data", [])
+                data = self._fetch_keyword(keyword, params)
                 logger.info(f"  Got {len(data)} articles for '{keyword}'")
+                successful_keywords += 1
 
                 for item in data:
                     url = item.get("url")
                     if not url:
                         continue
 
-                    # Track keywords for the article
                     if url not in keyword_map:
                         keyword_map[url] = []
                     keyword_map[url].append(keyword)
@@ -114,10 +151,25 @@ class MediaStackClient:
                         keywords=keyword_map.get(url, []),
                     )
 
+            except ExternalAPIError as e:
+                logger.error(f"API error for keyword '{keyword}': {e}")
+                failed_keywords += 1
+                if "Invalid" in str(e) or "key" in str(e).lower():
+                    raise
             except Exception as e:
-                logger.warning(f"Error fetching keyword '{keyword}': {e}")
+                logger.warning(f"Failed to fetch keyword '{keyword}': {e}")
+                failed_keywords += 1
                 continue
 
         articles = list(all_articles.values())
-        logger.info(f"Total unique articles fetched ({date_from} to {date_to}): {len(articles)}")
+        logger.info(
+            f"Fetched {len(articles)} unique articles "
+            f"({successful_keywords} keywords succeeded, {failed_keywords} failed)"
+        )
+
+        if not articles and failed_keywords > 0:
+            raise ExternalAPIError(
+                f"Failed to fetch any articles ({failed_keywords} keywords failed)"
+            )
+
         return articles
