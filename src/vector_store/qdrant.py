@@ -12,7 +12,10 @@ from rag_baseline.configuration import settings
 
 class QdrantRepository:
     def __init__(self) -> None:
-        self.client = QdrantClient(url=settings.qdrant_url)
+        self.client = QdrantClient(
+            url=settings.qdrant_url,
+            timeout=120,
+        )
 
     def create_collection_if_not_exists(self, vector_size: int) -> None:
         collections = self.client.get_collections().collections
@@ -48,6 +51,7 @@ class QdrantRepository:
         self.client.upsert(
             collection_name=settings.qdrant_collection_name,
             points=points,
+            wait=True,
         )
 
     def search(
