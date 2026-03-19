@@ -1,7 +1,9 @@
-# env
+# ENV
 .env
+.env.local
+.env.*.local
 
-# python
+# PYTHON
 __pycache__/
 *.pyc
 .venv/
@@ -10,11 +12,24 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# editor
-.vscode/
+# NODE / NEXT.JS
+node_modules/
+.next/
+out/
 
-# data / cache
-data/
+# LOGS
+logs/
 *.log
+
+# DATA / CACHE
+data/
 .notebook/
 uv.lock
+
+# COVERAGE
+htmlcov/
+
+# EDITOR / OS
+.vscode/
+.idea/
+.DS_Store
