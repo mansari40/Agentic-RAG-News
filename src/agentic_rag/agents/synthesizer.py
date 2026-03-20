@@ -42,6 +42,7 @@ class AnswerSynthesizer:
         key_facts = state.get("key_facts", [])
         is_domain_relevant = state.get("is_domain_relevant", True)
         confidence = state.get("confidence_score", 0.5)
+        query_type = state.get("query_type", "simple")
         refinement_count = state.get("refinement_count", 0)
 
         # Out of scope
@@ -94,6 +95,8 @@ class AnswerSynthesizer:
                 sources=verified_sources,
                 key_facts=key_facts,
                 max_tokens=agentic_settings.max_synthesis_tokens,
+                query_type=query_type,
+                confidence_score=confidence,
             )
         except Exception as exc:
             logger.error(f"Synthesis error: {exc}")
