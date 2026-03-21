@@ -86,7 +86,7 @@ export async function clearMemory() {
 
 export async function getHealth() {
   try {
-    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(3000) })
+    const r = await fetch(`${API}/health`, { signal: AbortSignal.timeout(15000) })
     return r.ok ? await r.json() : null
   } catch { return null }
 }
