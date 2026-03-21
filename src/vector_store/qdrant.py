@@ -14,6 +14,7 @@ class QdrantRepository:
     def __init__(self) -> None:
         self.client = QdrantClient(
             url=settings.qdrant_url,
+            api_key=settings.qdrant_api_key or None,
             timeout=120,
         )
 

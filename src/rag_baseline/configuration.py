@@ -6,6 +6,7 @@ class ApplicationSettings(BaseSettings):
     openai_api_key: str | None = None
     postgres_url: str | None = None
     qdrant_url: str | None = None
+    qdrant_api_key: str | None = None
     qdrant_collection_name: str = "news_chunks"
     embedding_model_name: str = "text-embedding-3-small"
     chat_model_name: str = "gpt-4o-mini"
