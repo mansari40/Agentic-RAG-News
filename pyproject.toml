@@ -26,6 +26,7 @@ dependencies = [
   # PostgreSQL
   "sqlalchemy>=2.0.30",
   "psycopg[binary]>=3.2.1",
+  "psycopg2-binary>=2.9.0",
 
   # FastAPI
   "fastapi>=0.104.1",
