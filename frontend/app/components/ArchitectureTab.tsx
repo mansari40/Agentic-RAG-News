@@ -9,7 +9,7 @@
 const BASELINE_STEPS = [
   { label: "User Query", color: "#1e3a5f", border: "#3b82f6" },
   { label: "Embedder", sub: "text-embedding-3-small", color: "#1e40af", border: "#3b82f6" },
-  { label: "Vector DB", sub: "~900 articles · hybrid BM25+vector", color: "#052e16", border: "#4ade80" },
+  { label: "Vector DB", sub: "hybrid BM25 + vector", color: "#052e16", border: "#4ade80" },
   { label: "Top-K Select", sub: "k = 1–10", color: "#1e40af", border: "#3b82f6" },
   { label: "LLM Generate", sub: "gpt-4o-mini", color: "#2d1657", border: "#a855f7" },
   { label: "Answer", color: "#450a0a", border: "#ef4444" },
@@ -171,13 +171,9 @@ export function ArchitectureTab() {
             <rect width={B_W} height={B_H} rx="12" fill="#0a1220" />
 
             {/* diagram title */}
-            <text x={B_W / 2} y={16} textAnchor="middle" fontSize="12" fontWeight="700"
+            <text x={B_W / 2} y={16} textAnchor="middle" fontSize="16" fontWeight="700"
               fill="#e2e8f0" fontFamily="Inter, sans-serif" letterSpacing="0.5">
               Baseline RAG Pipeline
-            </text>
-            <text x={B_W / 2} y={30} textAnchor="middle" fontSize="9"
-              fill="#64748b" fontFamily="Inter, sans-serif">
-              ~3 s · 1 LLM call · ~$0.0001 / query
             </text>
 
             {BASELINE_STEPS.map((step, i) => {
@@ -268,12 +264,7 @@ export function ArchitectureTab() {
       {/* ═══════════════ AGENTIC RAG ═══════════════ */}
       <div className="card p-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white">Agentic RAG — ReAct Researcher</h2>
-          <div className="flex gap-4 text-xs font-mono" style={{ color: "#64748b" }}>
-            <span>20–50 s</span>
-            <span>6–8 LLM calls</span>
-            <span>~$0.03–0.04</span>
-          </div>
+          <h2 className="text-sm font-semibold text-white">Agentic RAG Pipeline</h2>
         </div>
 
         {/* SVG diagram */}
@@ -297,26 +288,26 @@ export function ArchitectureTab() {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   AgenticSVG — vertical pipeline with fan-out retrieval bus + refine loop
+   AgenticSVG — vertical pipeline with scope check, fan-out retrieval + refine loop
 ────────────────────────────────────────────────────────────────────────────── */
 function AgenticSVG() {
-  // Layout constants
-  const W = 700
-  const H = 520
-
-  // centre x
+  const W = 820
+  const H = 820
   const CX = W / 2
 
-  // Row y-centres
-  const Y_PLANNER   = 55
-  const Y_ORCH      = 145
-  const Y_BUS_TOP   = 215   // top of fan-out bus
-  const Y_BUS_BOT   = 315   // bottom of fan-in bus
-  const Y_SOURCE    = 265   // source nodes centre
-  const Y_RANKER    = 385
-  const Y_VERIFIER  = 455
-  // source node positions (3 nodes)
-  const SRC_XS = [140, 350, 560]
+  const Y_QUERY    = 48
+  const Y_PLANNER  = 118
+  const Y_SCOPE    = 200
+  const Y_ORCH     = 305
+  const Y_BUS_TOP  = 375
+  const Y_SOURCE   = 425
+  const Y_BUS_BOT  = 475
+  const Y_RANKER   = 542
+  const Y_VERIFIER = 614
+  const Y_SYNTH    = 690
+  const Y_ANSWER   = 760
+
+  const SRC_XS = [116, 312, 508, 704]
   const NODE_W = 150
   const NODE_H = 44
 
@@ -328,7 +319,6 @@ function AgenticSVG() {
       style={{ minWidth: 480 }}
     >
       <defs>
-        {/* reuse glow filters from baseline — but define fresh IDs to avoid collision */}
         <filter id="ag-gB" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
           <feFlood floodColor="#3b82f6" floodOpacity="0.5" result="c" />
@@ -359,8 +349,23 @@ function AgenticSVG() {
           <feComposite in="c" in2="blur" operator="in" result="glow" />
           <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
+        <filter id="ag-gC" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+          <feFlood floodColor="#06b6d4" floodOpacity="0.5" result="c" />
+          <feComposite in="c" in2="blur" operator="in" result="glow" />
+          <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="ag-gR" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+          <feFlood floodColor="#ef4444" floodOpacity="0.5" result="c" />
+          <feComposite in="c" in2="blur" operator="in" result="glow" />
+          <feMerge><feMergeNode in="glow" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
 
         {/* gradients */}
+        <linearGradient id="ag-lgS" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#1e3a5f" /><stop offset="100%" stopColor="#0f1f3d" />
+        </linearGradient>
         <linearGradient id="ag-lgB" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#1e3a5f" /><stop offset="100%" stopColor="#0b1f38" />
         </linearGradient>
@@ -378,6 +383,12 @@ function AgenticSVG() {
         </linearGradient>
         <linearGradient id="ag-lgGreen" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#052e16" /><stop offset="100%" stopColor="#021509" />
+        </linearGradient>
+        <linearGradient id="ag-lgC" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#164e63" /><stop offset="100%" stopColor="#083344" />
+        </linearGradient>
+        <linearGradient id="ag-lgR" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#7f1d1d" /><stop offset="100%" stopColor="#3f0d0d" />
         </linearGradient>
 
         {/* arrows */}
@@ -399,38 +410,80 @@ function AgenticSVG() {
         <marker id="ag-ahR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
           <path d="M0,1 L9,5 L0,9 Z" fill="#f59e0b" />
         </marker>
+        <marker id="ag-ahRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,1 L9,5 L0,9 Z" fill="#ef4444" />
+        </marker>
+        <marker id="ag-ahC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+          <path d="M0,1 L9,5 L0,9 Z" fill="#06b6d4" />
+        </marker>
       </defs>
 
       {/* background */}
       <rect width={W} height={H} rx="12" fill="#0a1220" />
 
       {/* diagram title */}
-      <text x={W / 2} y={16} textAnchor="middle" fontSize="12" fontWeight="700"
+      <text x={W / 2} y={16} textAnchor="middle" fontSize="14" fontWeight="700"
         fill="#e2e8f0" fontFamily="Inter, sans-serif" letterSpacing="0.5">
-        Agentic RAG — ReAct Researcher
+        Agentic RAG Pipeline
       </text>
-      <text x={W / 2} y={30} textAnchor="middle" fontSize="9"
-        fill="#64748b" fontFamily="Inter, sans-serif">
-        20–50 s · 6–8 LLM calls · ~$0.03–0.04 / query
-      </text>
+
+      {/* ── User Query ── */}
+      <NodeRect cx={CX} cy={Y_QUERY} w={NODE_W + 30} h={NODE_H}
+        fill="url(#ag-lgS)" stroke="#3b82f6" filter="url(#ag-gB)"
+        label="User Query" />
+
+      {/* arrow: User Query → QueryPlanner */}
+      <line x1={CX} y1={Y_QUERY + NODE_H / 2} x2={CX} y2={Y_PLANNER - NODE_H / 2}
+        stroke="#3b82f6" strokeWidth="2" markerEnd="url(#ag-ahB)"
+        className="arch-fl arch-d0" />
 
       {/* ── 1. QueryPlanner ── */}
       <NodeRect cx={CX} cy={Y_PLANNER} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgB)" stroke="#3b82f6" filter="url(#ag-gB)"
         label="① QueryPlanner" sub="gpt-4o-mini" />
 
-      {/* arrow planner → researcher */}
-      <line x1={CX} y1={Y_PLANNER + NODE_H / 2} x2={CX} y2={Y_ORCH - NODE_H / 2}
-        stroke="#3b82f6" strokeWidth="2" markerEnd="url(#ag-ahB)"
+      {/* arrow: QueryPlanner → ScopeCheck */}
+      <line x1={CX} y1={Y_PLANNER + NODE_H / 2} x2={CX} y2={Y_SCOPE - NODE_H / 2}
+        stroke="#06b6d4" strokeWidth="2" markerEnd="url(#ag-ahC)"
         className="arch-fl arch-d0" />
 
-      {/* ── 2. ResearchAgent ── */}
+      {/* ── Scope Check ── */}
+      <NodeRect cx={CX} cy={Y_SCOPE} w={NODE_W + 30} h={NODE_H}
+        fill="url(#ag-lgC)" stroke="#06b6d4" filter="url(#ag-gC)"
+        label="Scope Check" sub="in scope?" />
+
+      {/* Out of Scope arrow → left */}
+      <line
+        x1={CX - (NODE_W + 30) / 2} y1={Y_SCOPE}
+        x2={138} y2={Y_SCOPE}
+        stroke="#ef4444" strokeWidth="2" markerEnd="url(#ag-ahRed)"
+        strokeDasharray="5 3"
+      />
+      <text x={185} y={Y_SCOPE - 9}
+        textAnchor="middle" fontSize="8.5" fill="#ef4444" fontFamily="Inter, sans-serif">
+        Out of Scope
+      </text>
+
+      {/* Out of Scope box */}
+      <NodeRect cx={75} cy={Y_SCOPE} w={120} h={NODE_H}
+        fill="url(#ag-lgR)" stroke="#ef4444" filter="url(#ag-gR)"
+        label="Not Answered" sub="out of scope" />
+
+      {/* In Scope arrow → down to Researcher */}
+      <line x1={CX} y1={Y_SCOPE + NODE_H / 2} x2={CX} y2={Y_ORCH - NODE_H / 2}
+        stroke="#3b82f6" strokeWidth="2" markerEnd="url(#ag-ahB)"
+        className="arch-fl arch-d0" />
+      <text x={CX + 10} y={(Y_SCOPE + Y_ORCH) / 2}
+        textAnchor="start" fontSize="8.5" fill="#4ade80" fontFamily="Inter, sans-serif">
+        In Scope
+      </text>
+
+      {/* ── 2. Researcher ── */}
       <NodeRect cx={CX} cy={Y_ORCH} w={NODE_W + 40} h={NODE_H}
         fill="url(#ag-lgG)" stroke="#4ade80" filter="url(#ag-gG)"
         label="② Researcher" sub="gpt-4o · ReAct · max 6 steps" />
 
-      {/* fan-out: researcher → 3 sources */}
-      {/* vertical stem from researcher down to bus-top */}
+      {/* fan-out: researcher → bus */}
       <line x1={CX} y1={Y_ORCH + NODE_H / 2} x2={CX} y2={Y_BUS_TOP}
         stroke="#4ade80" strokeWidth="2"
         className="arch-fl arch-d0" />
@@ -457,6 +510,8 @@ function AgenticSVG() {
         sub="12 German keywords" fill="url(#ag-lgA)" stroke="#f59e0b" filter="url(#ag-gA)" />
       <ToolNode cx={SRC_XS[2]} cy={Y_SOURCE} label="Tavily Web"
         sub="Open web search" fill="url(#ag-lgB)" stroke="#60a5fa" filter="url(#ag-gB)" />
+      <ToolNode cx={SRC_XS[3]} cy={Y_SOURCE} label="Baseline DB"
+        sub="hybrid BM25 + vector" fill="url(#ag-lgI)" stroke="#818cf8" filter="url(#ag-gI)" />
 
       {/* fan-in: 3 sources → ranker bus */}
       {SRC_XS.map((sx, i) => (
@@ -473,16 +528,16 @@ function AgenticSVG() {
         strokeDasharray="4 3"
         className="arch-fl-slow" />
 
-      {/* bus → ranker */}
-      <line x1={CX} y1={Y_BUS_BOT} x2={CX} y2={Y_RANKER - NODE_H / 2}
-        stroke="#a855f7" strokeWidth="2" markerEnd="url(#ag-ahP)"
-        className="arch-fl arch-d1" />
-
       {/* source count label */}
       <text x={CX} y={Y_BUS_BOT - 6} textAnchor="middle" fontSize="9"
         fill="#64748b" fontFamily="Inter, sans-serif">
         ~40 raw sources
       </text>
+
+      {/* bus → ranker */}
+      <line x1={CX} y1={Y_BUS_BOT} x2={CX} y2={Y_RANKER - NODE_H / 2}
+        stroke="#a855f7" strokeWidth="2" markerEnd="url(#ag-ahP)"
+        className="arch-fl arch-d1" />
 
       {/* ── 4. SourceRanker ── */}
       <NodeRect cx={CX} cy={Y_RANKER} w={NODE_W + 30} h={NODE_H}
@@ -497,24 +552,34 @@ function AgenticSVG() {
       {/* ── 5. FactVerifier ── */}
       <NodeRect cx={CX} cy={Y_VERIFIER} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgGreen)" stroke="#4ade80" filter="url(#ag-gG)"
-        label="⑤ FactVerifier" sub="gpt-4.1 · reads 20 sources" />
+        label="⑤ FactVerifier" sub="gpt-4o · reads 20 sources" />
 
       {/* verifier → synthesizer */}
-      <line x1={CX} y1={Y_VERIFIER + NODE_H / 2} x2={CX} y2={H - NODE_H / 2 - 4}
+      <line x1={CX} y1={Y_VERIFIER + NODE_H / 2} x2={CX} y2={Y_SYNTH - NODE_H / 2}
         stroke="#818cf8" strokeWidth="2" markerEnd="url(#ag-ahI)"
         className="arch-fl arch-d2" />
 
       {/* ── 6. AnswerSynthesizer ── */}
-      <NodeRect cx={CX} cy={H - NODE_H / 2 - 2} w={NODE_W + 30} h={NODE_H}
+      <NodeRect cx={CX} cy={Y_SYNTH} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgI)" stroke="#818cf8" filter="url(#ag-gI)"
         label="⑥ AnswerSynthesizer" sub="gpt-4o-mini · final answer" />
 
+      {/* synthesizer → answer */}
+      <line x1={CX} y1={Y_SYNTH + NODE_H / 2} x2={CX} y2={Y_ANSWER - NODE_H / 2}
+        stroke="#ef4444" strokeWidth="2" markerEnd="url(#ag-ahRed)"
+        className="arch-fl arch-d2" />
+
+      {/* ── Answer ── */}
+      <NodeRect cx={CX} cy={Y_ANSWER} w={NODE_W + 30} h={NODE_H}
+        fill="url(#ag-lgR)" stroke="#ef4444" filter="url(#ag-gR)"
+        label="Answer" />
+
       {/* ── Amber refine loop (right side) ── */}
-      {/* Curved path from Synthesizer right → up → back into Researcher */}
       <path
-        d={`M ${CX + (NODE_W + 30) / 2} ${H - NODE_H / 2 - 2}
-            C ${W - 30} ${H - NODE_H / 2 - 2}, ${W - 30} ${Y_ORCH},
-              ${CX + (NODE_W + 40) / 2} ${Y_ORCH}`}
+        d={`M ${CX + (NODE_W + 30) / 2} ${Y_SYNTH}
+            L ${W - 12} ${Y_SYNTH}
+            L ${W - 12} ${Y_ORCH}
+            L ${CX + (NODE_W + 40) / 2} ${Y_ORCH}`}
         fill="none"
         stroke="#f59e0b"
         strokeWidth="1.8"
@@ -523,10 +588,15 @@ function AgenticSVG() {
         strokeDasharray="5 4"
       />
       {/* refine label */}
-      <text x={W - 22} y={(H + Y_ORCH) / 2} textAnchor="middle"
+      <text x={W - 6} y={(Y_SYNTH + Y_ORCH) / 2} textAnchor="middle"
         fontSize="8.5" fill="#f59e0b" fontFamily="Inter, sans-serif"
-        transform={`rotate(-90, ${W - 22}, ${(H + Y_ORCH) / 2})`}>
+        transform={`rotate(-90, ${W - 6}, ${(Y_SYNTH + Y_ORCH) / 2})`}>
         refine loop (max 2×)
+      </text>
+      {/* refine condition label */}
+      <text x={(CX + (NODE_W + 30) / 2 + W - 12) / 2} y={Y_SYNTH + 14}
+        textAnchor="middle" fontSize="8" fill="#64748b" fontFamily="Inter, sans-serif">
+        if confidence &lt; 0.45
       </text>
     </svg>
   )
