@@ -2,10 +2,23 @@
 import { useState, useRef } from "react"
 import { Play, Database, Cpu, Clock, Target, DollarSign, BookOpen } from "lucide-react"
 import { streamAgentic, queryBaseline } from "../lib/api"
+import { loadCosts, saveCosts } from "../lib/storage"
 import { SourceCard } from "./SourceCard"
 import { StreamingPanel, resolveStep } from "./StreamingPanel"
-import type { QueryResult, SSEEvent } from "../lib/types"
+import type { QueryResult, QueryCostEntry, SSEEvent } from "../lib/types"
 import type { LiveStep, LiveReActEvent } from "./StreamingPanel"
+
+function renderAnswer(text: string) {
+  return text.split("\n").map((line, li) => {
+    if (!line.trim()) return <br key={li} />
+    const parts = line.split(/\*\*(.*?)\*\*/g)
+    return (
+      <p key={li} className="text-sm text-text leading-relaxed">
+        {parts.map((p, i) => i % 2 === 1 ? <strong key={i}>{p}</strong> : p)}
+      </p>
+    )
+  })
+}
 
 const STEP_CONFIDENCE: Record<string, number> = {
   planned: 0.15, researched: 0.40, ranked: 0.45,
@@ -53,6 +66,12 @@ export function ABTestTab() {
         r.response_time = (Date.now() - startRef.current) / 1000
         r.mode = "baseline"
         setBaseline(prev => ({ ...prev, running: false, result: r, elapsed: r.response_time }))
+        const bEntry: QueryCostEntry = {
+          query: q.slice(0, 60), cost_usd: r.cost_usd || 0, total_tokens: r.total_tokens || 0,
+          llm_calls: r.llm_calls || 1, confidence: r.confidence || 0, query_type: "baseline",
+          timestamp: new Date().toLocaleTimeString(), mode: "baseline", response_time: r.response_time,
+        }
+        saveCosts([...loadCosts(), bEntry])
       } catch (e) {
         setBaseline(prev => ({ ...prev, running: false, error: String(e) }))
       }
@@ -90,6 +109,15 @@ export function ABTestTab() {
             r.mode = "agentic"
             r.response_time = (Date.now() - startRef.current) / 1000
             setAgentic(prev => ({ ...prev, result: r, conf: r.confidence, cost: r.cost_usd, tokens: r.total_tokens, elapsed: r.response_time }))
+            const aEntry: QueryCostEntry = {
+              query: q.slice(0, 60), cost_usd: r.cost_usd || 0, total_tokens: r.total_tokens || 0,
+              llm_calls: r.llm_calls || 0, confidence: r.confidence || 0, query_type: r.query_type || "unknown",
+              timestamp: new Date().toLocaleTimeString(), mode: "agentic", response_time: r.response_time,
+              sources_collected: r.researcher_scratchpad?.filter((s: { type: string }) => s.type === "observation").reduce((sum: number, s: { count?: number }) => sum + (s.count || 0), 0) || 0,
+              sources_verified: r.sources?.length || 0,
+              tools_used: r.researcher_scratchpad?.filter((s: { type: string; tool?: string }) => s.type === "action" && s.tool).map((s: { tool?: string }) => s.tool!) || [],
+            }
+            saveCosts([...loadCosts(), aEntry])
           }
           if (ev.type === "complete") {
             setAgentic(prev => ({ ...prev, running: false, steps: prev.steps.map(s => ({ ...s, done: true })) }))
@@ -163,7 +191,7 @@ export function ABTestTab() {
               {baseline.error && <p className="text-xs text-red">{baseline.error}</p>}
               {baseline.result && (
                 <div className="space-y-2">
-                  <p className="text-sm text-text leading-relaxed">{baseline.result.answer}</p>
+                  <div className="space-y-1">{renderAnswer(baseline.result.answer)}</div>
                   <div className="flex gap-3 text-xs font-mono text-text-3 flex-wrap">
                     <span className="flex items-center gap-1"><Clock size={10} />{baseline.elapsed.toFixed(2)}s</span>
                     <span>{baseline.result.sources.length} sources</span>
@@ -205,7 +233,7 @@ export function ABTestTab() {
               {agentic.error && <p className="text-xs text-red">{agentic.error}</p>}
               {agentic.result && !agentic.running && (
                 <div className="space-y-2 mt-2 pt-2 border-t border-border">
-                  <p className="text-sm text-text leading-relaxed">{agentic.result.answer}</p>
+                  <div className="space-y-1">{renderAnswer(agentic.result.answer)}</div>
                   <div className="flex gap-3 text-xs font-mono flex-wrap">
                     <span className="text-text-3 flex items-center gap-1"><Clock size={10} />{agentic.elapsed.toFixed(2)}s</span>
                     <span className="text-text-3">{agentic.result.sources.length} sources</span>

@@ -74,9 +74,9 @@ export default function Home() {
           </nav>
         </header>
 
-        {/* Tab content */}
+        {/* Tab content — always mounted to preserve state across tab switches */}
         <div className="flex-1 overflow-hidden">
-          {tab === "chat" && (
+          <div className={tab === "chat" ? "h-full" : "hidden"}>
             <ChatTab
               mode={mode}
               key={pendingQuery || "chat"}
@@ -86,11 +86,11 @@ export default function Home() {
               dateFrom={dateFrom}
               dateTo={dateTo}
             />
-          )}
-          {tab === "ab" && <ABTestTab />}
-          {tab === "analytics" && <AnalyticsTab />}
-          {tab === "architecture" && <ArchitectureTab />}
-          {tab === "help" && <HelpTab />}
+          </div>
+          <div className={tab === "ab" ? "h-full" : "hidden"}><ABTestTab /></div>
+          <div className={tab === "analytics" ? "h-full" : "hidden"}><AnalyticsTab /></div>
+          <div className={tab === "architecture" ? "h-full" : "hidden"}><ArchitectureTab /></div>
+          <div className={tab === "help" ? "h-full" : "hidden"}><HelpTab /></div>
         </div>
       </main>
     </div>
