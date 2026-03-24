@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from typing import Any
 from urllib.parse import urlparse
 
@@ -101,13 +101,9 @@ class MediaStackAPITool:
 
         max_results = max_results or agentic_settings.mediastack_max_results
 
-        days_back = getattr(
-            agentic_settings,
-            "news_query_days_back",
-            getattr(agentic_settings, "news_fetch_days_back", 30),
-        )
-        cutoff = max(self._min_date, datetime.now(tz=UTC) - timedelta(days=min(days_back, 30)))
-        date_from = cutoff.strftime("%Y-%m-%d")
+        # Use _min_date directly — it is updated per-request by the researcher
+        # to match the user's chosen date_from from the left bar
+        date_from = self._min_date.strftime("%Y-%m-%d")
         date_to = datetime.now(tz=UTC).strftime("%Y-%m-%d")
 
         keywords = self._build_keyword_plan(query)

@@ -29,7 +29,7 @@ class FactVerifier:
         sources = state.get("all_sources", [])
         query = state.get("query", "")
         today = datetime.now().strftime("%Y-%m-%d")
-        cutoff = agentic_settings.min_allowed_evidence_date
+        cutoff = state.get("cutoff_date_override") or agentic_settings.min_allowed_evidence_date
 
         if not sources:
             logger.warning("No sources to verify")

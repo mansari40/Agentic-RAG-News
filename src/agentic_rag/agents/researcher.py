@@ -75,6 +75,13 @@ class ResearchAgent:
         )
         # Parse it once here — applied as a hard filter to every source we collect
         cutoff_dt = parse_min_date(cutoff_date)
+        date_to_str = state.get("date_to_override")
+        date_to_dt = parse_min_date(date_to_str) if date_to_str else None
+
+        # Push per-request date bounds into the tool instances so their internal
+        # pre-filters also use the correct dates for this request
+        self.registry.tavily._min_date = cutoff_dt
+        self.registry.mediastack._min_date = cutoff_dt
         raw_allowed_tools = state.get("allowed_tools")
         allowed_tools: list[str] | None = (
             raw_allowed_tools if isinstance(raw_allowed_tools, list) else None
@@ -255,10 +262,12 @@ class ResearchAgent:
                     if url and url in seen_urls:
                         skipped_seen += 1
                         continue
-                    # Drop anything published before the cutoff,
-                    # regardless of which tool returned it
+                    # Drop anything outside the requested date window
                     pub = parse_date(src.get("published_at"))
                     if pub is not None and pub < cutoff_dt:
+                        skipped_old += 1
+                        continue
+                    if date_to_dt is not None and pub is not None and pub > date_to_dt:
                         skipped_old += 1
                         continue
                     all_sources.append(src)

@@ -3,7 +3,7 @@ Tavily Search Tool — fetches articles from specialist timber sites or the open
 """
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 import structlog
@@ -143,7 +143,7 @@ class TavilySearchTool:
         except TimeoutError:
             logger.warning("Tavily: one or more search runs timed out after 10s")
 
-        now = datetime.now()
+        now = datetime.now(tz=UTC)
         all_results.sort(key=lambda s: self._rescore(s, self._min_date, now), reverse=True)
 
         logger.info(
