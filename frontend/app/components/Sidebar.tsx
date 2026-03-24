@@ -1,9 +1,10 @@
 ﻿"use client"
 import { useState, useEffect } from "react"
-import { Activity, Trash2, RefreshCw, Database, ChevronRight, ChevronLeft } from "lucide-react"
+import { Activity, Trash2, RefreshCw, Database, ChevronRight, ChevronLeft, Plus, MessageSquare } from "lucide-react"
 import { getHealth, clearMemory } from "../lib/api"
-import { loadMessages, loadCosts, clearAll } from "../lib/storage"
-import type { Message, QueryCostEntry } from "../lib/types"
+import { loadCosts, loadSessions, clearAll } from "../lib/storage"
+import type { ChatSession } from "../lib/storage"
+import type { QueryCostEntry } from "../lib/types"
 
 const TOOL_OPTIONS = [
   { key: "search_tavily_specialist", label: "Tavily Specialist" },
@@ -17,6 +18,8 @@ interface Props {
   mode: "baseline" | "agentic"
   setMode: (m: "baseline" | "agentic") => void
   onQuickQuery: (q: string) => void
+  onNewChat: () => void
+  onSwitchSession: (id: string) => void
   researchMode: boolean
   setResearchMode: (v: boolean) => void
   allowedTools: string[]
@@ -25,12 +28,13 @@ interface Props {
   setDateFrom: (d: string) => void
   dateTo: string
   setDateTo: (d: string) => void
+  sessionId: string
 }
 
-export function Sidebar({ mode, setMode, onQuickQuery, researchMode, setResearchMode, allowedTools, setAllowedTools, dateFrom, setDateFrom, dateTo, setDateTo }: Props) {
+export function Sidebar({ mode, setMode, onQuickQuery, onNewChat, onSwitchSession, researchMode, setResearchMode, allowedTools, setAllowedTools, dateFrom, setDateFrom, dateTo, setDateTo, sessionId }: Props) {
   const [health, setHealth] = useState<{ version?: string; pipelines?: Record<string, string> } | null>(null)
-  const [messages, setMessages] = useState<Message[]>([])
   const [costs, setCosts] = useState<QueryCostEntry[]>([])
+  const [sessions, setSessions] = useState<ChatSession[]>([])
   const [clearing, setClearing] = useState(false)
   const [collapsed, setCollapsed] = useState(false)
 
@@ -41,15 +45,17 @@ export function Sidebar({ mode, setMode, onQuickQuery, researchMode, setResearch
   }, [])
 
   useEffect(() => {
-    const refresh = () => { setMessages(loadMessages()); setCosts(loadCosts()) }
+    const refresh = () => {
+      setCosts(loadCosts())
+      setSessions(loadSessions())
+    }
     refresh()
     const interval = setInterval(refresh, 2000)
     return () => clearInterval(interval)
-  }, [])
+  }, [sessionId])
 
   const sessionCost = costs.reduce((s, c) => s + c.cost_usd, 0)
   const sessionTokens = costs.reduce((s, c) => s + c.total_tokens, 0)
-  const recentQueries = messages.filter(m => m.role === "user").slice(-6).reverse()
 
   const handleClearMemory = async () => {
     setClearing(true)
@@ -111,6 +117,18 @@ export function Sidebar({ mode, setMode, onQuickQuery, researchMode, setResearch
                 </span>
               )}
             </div>
+          </div>
+
+          {/* New Chat button */}
+          <div className="px-3 py-2.5 border-b border-border">
+            <button
+              onClick={onNewChat}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-200"
+              style={{ background: "linear-gradient(135deg, rgba(15,118,110,0.12), rgba(4,79,80,0.08))", border: "1px solid #0f766e", color: "#0f766e" }}
+            >
+              <Plus size={13} />
+              New Chat
+            </button>
           </div>
 
           {/* Mode selector */}
@@ -232,18 +250,23 @@ export function Sidebar({ mode, setMode, onQuickQuery, researchMode, setResearch
             </div>
           )}
 
-          {/* Recent queries */}
-          {recentQueries.length > 0 && (
+          {/* Recent chats */}
+          {sessions.length > 0 && (
             <div className="px-4 py-3 border-b border-border">
-              <p className="text-xs font-semibold text-text uppercase tracking-wider mb-2">Recent Queries</p>
+              <p className="text-xs font-semibold text-text uppercase tracking-wider mb-2">Recent Chats</p>
               <div className="space-y-1">
-                {recentQueries.map(msg => (
+                {sessions.slice(0, 8).map(s => (
                   <button
-                    key={msg.id}
-                    onClick={() => onQuickQuery(msg.content)}
-                    className="w-full text-left text-xs text-text-3 hover:text-text-2 px-2 py-1.5 rounded-lg hover:bg-surface transition-colors truncate block"
+                    key={s.id}
+                    onClick={() => onSwitchSession(s.id)}
+                    className={`w-full text-left text-xs px-2 py-1.5 rounded-lg transition-colors truncate flex items-center gap-1.5 ${
+                      s.id === sessionId
+                        ? "bg-surface-2 text-text font-medium border border-border"
+                        : "text-text-3 hover:text-text-2 hover:bg-surface"
+                    }`}
                   >
-                    {msg.content.slice(0, 45)}{msg.content.length > 45 ? "…" : ""}
+                    <MessageSquare size={10} className="shrink-0 opacity-60" />
+                    {s.title || "New Chat"}
                   </button>
                 ))}
               </div>
@@ -274,7 +297,7 @@ export function Sidebar({ mode, setMode, onQuickQuery, researchMode, setResearch
             </button>
 
             <button
-              onClick={() => { clearAll(); setMessages([]); setCosts([]) }}
+              onClick={() => { clearAll(); setCosts([]); setSessions([]) }}
               className="btn-ghost w-full text-xs flex items-center gap-2 text-red-400 hover:text-red"
             >
               <Trash2 size={11} />

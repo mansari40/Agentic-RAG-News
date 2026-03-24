@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { MessageSquare, FlaskConical, TrendingUp, HelpCircle, GitBranch } from "lucide-react"
 import { Sidebar } from "./components/Sidebar"
 import { ChatTab } from "./components/ChatTab"
@@ -7,6 +7,8 @@ import { ABTestTab } from "./components/ABTestTab"
 import { AnalyticsTab } from "./components/AnalyticsTab"
 import { HelpTab } from "./components/HelpTab"
 import { ArchitectureTab } from "./components/ArchitectureTab"
+import { clearMemory } from "./lib/api"
+import { getCurrentSessionId, setCurrentSessionId } from "./lib/storage"
 
 const TABS = [
   { id: "chat",         label: "Chat",         icon: MessageSquare },
@@ -29,6 +31,28 @@ export default function Home() {
   const [allowedTools, setAllowedTools] = useState<string[]>(ALL_TOOLS)
   const [dateFrom, setDateFrom] = useState("2026-01-01")
   const [dateTo, setDateTo] = useState(TODAY)
+  const [sessionId, setSessionId] = useState<string>("default")
+
+  // Initialise sessionId from localStorage after hydration
+  useEffect(() => {
+    setSessionId(getCurrentSessionId())
+  }, [])
+
+  const handleNewChat = useCallback(async () => {
+    const newId = crypto.randomUUID()
+    setCurrentSessionId(newId)
+    setSessionId(newId)
+    setTab("chat")
+    setPendingQuery(null)
+    await clearMemory()
+  }, [])
+
+  const handleSwitchSession = useCallback((id: string) => {
+    setCurrentSessionId(id)
+    setSessionId(id)
+    setTab("chat")
+    setPendingQuery(null)
+  }, [])
 
   const handleQuickQuery = useCallback((q: string) => {
     setTab("chat")
@@ -41,6 +65,8 @@ export default function Home() {
         mode={mode}
         setMode={setMode}
         onQuickQuery={handleQuickQuery}
+        onNewChat={handleNewChat}
+        onSwitchSession={handleSwitchSession}
         researchMode={researchMode}
         setResearchMode={setResearchMode}
         allowedTools={allowedTools}
@@ -49,6 +75,7 @@ export default function Home() {
         setDateFrom={setDateFrom}
         dateTo={dateTo}
         setDateTo={setDateTo}
+        sessionId={sessionId}
       />
 
       {/* Main content */}
@@ -79,12 +106,13 @@ export default function Home() {
           <div className={tab === "chat" ? "h-full" : "hidden"}>
             <ChatTab
               mode={mode}
-              key={pendingQuery || "chat"}
+              key={sessionId}
               initialQuery={pendingQuery}
               onQueryConsumed={() => setPendingQuery(null)}
               allowedTools={allowedTools}
               dateFrom={dateFrom}
               dateTo={dateTo}
+              sessionId={sessionId}
             />
           </div>
           <div className={tab === "ab" ? "h-full" : "hidden"}><ABTestTab /></div>

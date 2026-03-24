@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Send, X, Cpu, Database, RefreshCw, Download } from "lucide-react"
 import { streamAgentic, queryBaseline } from "../lib/api"
-import { loadMessages, saveMessages, loadCosts, saveCosts } from "../lib/storage"
+import { loadSessionMessages, saveSessionMessages, loadCosts, saveCosts, upsertSession } from "../lib/storage"
 import { SourceCard } from "./SourceCard"
 import { ReasoningTrace } from "./ReasoningTrace"
 import { StreamingPanel, resolveStep } from "./StreamingPanel"
@@ -33,6 +33,7 @@ export function ChatTab({
   allowedTools,
   dateFrom,
   dateTo,
+  sessionId = "default",
 }: {
   mode: "baseline" | "agentic"
   initialQuery?: string | null
@@ -40,6 +41,7 @@ export function ChatTab({
   allowedTools?: string[]
   dateFrom?: string
   dateTo?: string
+  sessionId?: string
 }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -54,8 +56,8 @@ export function ChatTab({
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
-    setMessages(loadMessages())
-  }, [])
+    setMessages(loadSessionMessages(sessionId))
+  }, [sessionId])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -83,7 +85,10 @@ export function ChatTab({
     const userMsg: Message = { id: Date.now().toString(), role: "user", content: q, timestamp: Date.now() }
     setMessages(prev => {
       const next = [...prev, userMsg]
-      saveMessages(next)
+      saveSessionMessages(sessionId, next)
+      // Register/update session metadata using first user message as title
+      const firstUserMsg = next.find(m => m.role === "user")
+      upsertSession(sessionId, (firstUserMsg?.content || q).slice(0, 60))
       return next
     })
 
@@ -99,7 +104,7 @@ export function ChatTab({
         }
         setMessages(prev => {
           const next = [...prev, assistantMsg]
-          saveMessages(next)
+          saveSessionMessages(sessionId, next)
           return next
         })
         // Save baseline cost entry
@@ -118,7 +123,7 @@ export function ChatTab({
         saveCosts([...existingCosts, costEntry])
       } catch (e) {
         const err: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: `Error: ${e}`, timestamp: Date.now() }
-        setMessages(prev => { const next = [...prev, err]; saveMessages(next); return next })
+        setMessages(prev => { const next = [...prev, err]; saveSessionMessages(sessionId, next); return next })
       }
       setRunning(false)
       return
@@ -168,7 +173,7 @@ export function ChatTab({
     } catch (e) {
       if ((e as Error).name !== "AbortError") {
         const err: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: `Error: ${e}`, timestamp: Date.now() }
-        setMessages(prev => { const next = [...prev, err]; saveMessages(next); return next })
+        setMessages(prev => { const next = [...prev, err]; saveSessionMessages(sessionId, next); return next })
         setRunning(false)
         setLiveSteps([])
         setLiveReact([])
@@ -185,7 +190,7 @@ export function ChatTab({
       }
       setMessages(prev => {
         const next = [...prev, assistantMsg]
-        saveMessages(next)
+        saveSessionMessages(sessionId, next)
         return next
       })
       // Save cost
