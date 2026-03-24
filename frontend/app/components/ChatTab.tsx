@@ -301,25 +301,59 @@ export function ChatTab({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Quick starts */}
-      {messages.length === 0 && (
-        <div className="px-4 pb-4">
-          <p className="text-xs text-text-3 mb-3 uppercase tracking-wider">Quick Start</p>
-          <div className="grid grid-cols-4 gap-2">
-            {QUICK_STARTS.map(([label, q]) => (
+
+      {/* ── Welcome state (no messages yet) ── */}
+      {messages.length === 0 && !running ? (
+        <div className="flex-1 flex flex-col items-center justify-between px-6 pt-0 pb-6 overflow-y-auto">
+
+          {/* Welcome text — centered vertically in upper portion */}
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
+            <h1 className="text-2xl font-semibold text-text mb-2">Welcome to Timber Intel!</h1>
+            <p className="text-sm text-text-3">How can I help you today?</p>
+          </div>
+
+          {/* Input + quick starts — pinned to bottom of welcome area */}
+          <div className="w-full max-w-2xl space-y-3">
+            <div className="card p-2 flex items-end gap-2"
+              style={{ background: "#ffffff", border: "1px solid #d1d5db" }}>
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder={`Ask about German timber markets [${mode.toUpperCase()}]`}
+                rows={1}
+                className="flex-1 bg-transparent text-sm text-text outline-none resize-none py-2 px-2 placeholder-text-3 max-h-32"
+                style={{ fontFamily: "var(--font-sora)" }}
+              />
               <button
-                key={label}
-                onClick={() => submit(q)}
-                disabled={running}
-                className="btn-ghost text-xs text-left py-2 px-3 border border-border rounded-lg hover:border-border-2 hover:text-text transition-all"
+                onClick={() => submit(input)}
+                disabled={!input.trim()}
+                className="shrink-0 p-2 rounded-lg transition-all duration-200 disabled:opacity-30"
+                style={{ background: input.trim() ? "#166534" : undefined, color: input.trim() ? "#4ade80" : "#4a6a4a" }}
               >
-                {label}
+                <Send size={16} />
               </button>
-            ))}
+            </div>
+            <p className="text-xs text-text-3 text-center">Enter to send · Shift+Enter for newline</p>
+            <div className="grid grid-cols-4 gap-2">
+              {QUICK_STARTS.map(([label, q]) => (
+                <button
+                  key={label}
+                  onClick={() => submit(q)}
+                  className="btn-ghost text-xs text-left py-2 px-3 border border-border rounded-lg hover:border-border-2 hover:text-text transition-all"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      )}
 
+      ) : (
+
+      /* ── Active chat state ── */
+      <>
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 space-y-4 pb-2">
         {messages.map((msg, idx) => (
@@ -505,6 +539,9 @@ export function ChatTab({
         </div>
         <p className="text-xs text-text-3 mt-1.5 text-center">Enter to send · Shift+Enter for newline</p>
       </div>
+      </>
+      )}
+
     </div>
   )
 }

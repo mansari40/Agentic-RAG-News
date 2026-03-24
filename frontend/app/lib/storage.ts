@@ -26,6 +26,12 @@ export function saveSessions(sessions: ChatSession[]) {
   localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions.slice(0, 20)))
 }
 
+export function deleteSession(id: string) {
+  const sessions = loadSessions().filter(s => s.id !== id)
+  saveSessions(sessions)
+  localStorage.removeItem(`${MESSAGES_KEY}_${id}`)
+}
+
 export function upsertSession(id: string, title: string) {
   const sessions = loadSessions()
   const existing = sessions.find(s => s.id === id)

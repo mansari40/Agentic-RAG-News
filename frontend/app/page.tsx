@@ -81,11 +81,7 @@ export default function Home() {
       {/* Main content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-bg text-text">
         {/* Header */}
-        <header className="border-b border-border px-6 py-3 flex items-center justify-between shrink-0 bg-surface">
-          <div>
-            <h1 className="text-sm font-semibold text-text">Timber Market Intelligence</h1>
-            <p className="text-xs text-text-3">German Timber Sector · Real-Time Market Intelligence</p>
-          </div>
+        <header className="border-b border-border px-6 py-3 flex items-center justify-end shrink-0 bg-surface">
           {/* Tab bar */}
           <nav className="flex items-center gap-1 p-1 rounded-xl" style={{ background: "#f3f4f6", border: "1px solid #d1d5db" }}>
             {TABS.map(({ id, label, icon: Icon }) => (

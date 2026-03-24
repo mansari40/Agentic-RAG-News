@@ -1,8 +1,8 @@
 ﻿"use client"
 import { useState, useEffect } from "react"
-import { Activity, Trash2, RefreshCw, Database, ChevronRight, ChevronLeft, Plus, MessageSquare } from "lucide-react"
+import { Activity, Trash2, RefreshCw, Database, ChevronRight, ChevronLeft, Plus, MessageSquare, X } from "lucide-react"
 import { getHealth, clearMemory } from "../lib/api"
-import { loadCosts, loadSessions, clearAll } from "../lib/storage"
+import { loadCosts, loadSessions, deleteSession, clearAll } from "../lib/storage"
 import type { ChatSession } from "../lib/storage"
 import type { QueryCostEntry } from "../lib/types"
 
@@ -256,18 +256,28 @@ export function Sidebar({ mode, setMode, onQuickQuery, onNewChat, onSwitchSessio
               <p className="text-xs font-semibold text-text uppercase tracking-wider mb-2">Recent Chats</p>
               <div className="space-y-1">
                 {sessions.slice(0, 8).map(s => (
-                  <button
+                  <div
                     key={s.id}
-                    onClick={() => onSwitchSession(s.id)}
-                    className={`w-full text-left text-xs px-2 py-1.5 rounded-lg transition-colors truncate flex items-center gap-1.5 ${
+                    className={`group flex items-center gap-1.5 rounded-lg px-2 py-1.5 transition-colors ${
                       s.id === sessionId
                         ? "bg-surface-2 text-text font-medium border border-border"
                         : "text-text-3 hover:text-text-2 hover:bg-surface"
                     }`}
                   >
                     <MessageSquare size={10} className="shrink-0 opacity-60" />
-                    {s.title || "New Chat"}
-                  </button>
+                    <button
+                      onClick={() => onSwitchSession(s.id)}
+                      className="flex-1 text-left text-xs truncate"
+                    >
+                      {s.title || "New Chat"}
+                    </button>
+                    <button
+                      onClick={() => { deleteSession(s.id); setSessions(prev => prev.filter(x => x.id !== s.id)) }}
+                      className="shrink-0 opacity-0 group-hover:opacity-100 text-text-3 hover:text-red transition-all"
+                    >
+                      <X size={11} />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
