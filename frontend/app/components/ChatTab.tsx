@@ -335,7 +335,7 @@ export function ChatTab({
                 <Send size={16} />
               </button>
             </div>
-            <p className="text-xs text-text-3 text-center">Enter to send · Shift+Enter for newline</p>
+            <p className="text-xs text-text-3 text-center">Try the below suggested topics:</p>
             <div className="grid grid-cols-4 gap-2">
               {QUICK_STARTS.map(([label, q]) => (
                 <button
