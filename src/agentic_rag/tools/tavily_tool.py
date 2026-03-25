@@ -26,6 +26,17 @@ _SPECIALIST_DOMAINS: list[str] = [
     "fordaq.com",
 ]
 
+# Sites that require a subscription — Tavily can only retrieve the headline and
+# teaser visible before the login wall. Accepted as headline-only signals.
+_PAYWALL_DOMAINS: frozenset[str] = frozenset(
+    [
+        "timber-online.net",
+        "holzkurier.com",
+        "euwid-holz.de",
+        "holz-zentralblatt.de",
+    ]
+)
+
 
 def _is_too_old(result: dict[str, Any], min_date: datetime, specialist_only: bool = False) -> bool:
     """
@@ -49,11 +60,24 @@ def _is_too_old(result: dict[str, Any], min_date: datetime, specialist_only: boo
 
 
 def _to_source(result: dict[str, Any]) -> RetrievedSource | None:
-    url = result.get("url")
+    url = result.get("url") or ""
     title = (result.get("title") or "").strip()
     content = (result.get("content") or "").strip()
-    if not url or (not title and not content):
+
+    if not url:
         return None
+
+    is_paywall = any(d in url for d in _PAYWALL_DOMAINS)
+
+    if is_paywall:
+        if not title:
+            return None
+        if not content:
+            content = f"[Paywall — headline only] {title}"
+    else:
+        if not title and not content:
+            return None
+
     return RetrievedSource(
         chunk_id="",
         article_id="",
