@@ -2,12 +2,12 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { Send, X, Cpu, Database, RefreshCw, Download } from "lucide-react"
 import { streamAgentic, queryBaseline } from "../lib/api"
-import { loadSessionMessages, saveSessionMessages, loadCosts, saveCosts, upsertSession } from "../lib/storage"
+import { loadSessionMessages, saveSessionMessages, loadCosts, saveCosts, upsertSession, loadResearchLog, saveResearchLog } from "../lib/storage"
 import { SourceCard } from "./SourceCard"
 import { ReasoningTrace } from "./ReasoningTrace"
 import { StreamingPanel, resolveStep } from "./StreamingPanel"
 import ReactMarkdown from "react-markdown"
-import type { Message, QueryResult, SSEEvent, QueryCostEntry } from "../lib/types"
+import type { Message, QueryResult, SSEEvent, QueryCostEntry, ResearchLogEntry } from "../lib/types"
 import type { LiveStep, LiveReActEvent } from "./StreamingPanel"
 
 const QUICK_STARTS = [
@@ -34,6 +34,7 @@ export function ChatTab({
   dateFrom,
   dateTo,
   sessionId = "default",
+  researchMode = false,
 }: {
   mode: "baseline" | "agentic"
   initialQuery?: string | null
@@ -42,6 +43,7 @@ export function ChatTab({
   dateFrom?: string
   dateTo?: string
   sessionId?: string
+  researchMode?: boolean
 }) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -121,6 +123,27 @@ export function ChatTab({
         }
         const existingCosts = loadCosts()
         saveCosts([...existingCosts, costEntry])
+        // Research log — only when Research Mode is ON
+        if (researchMode) {
+          const avgSim = result.sources?.length
+            ? result.sources.reduce((s: number, src: { score: number }) => s + src.score, 0) / result.sources.length
+            : null
+          const now = new Date()
+          const logEntry: ResearchLogEntry = {
+            date: now.toLocaleDateString(),
+            time: now.toLocaleTimeString(),
+            query: q,
+            response: result.answer || "",
+            mode: "Baseline",
+            cost_usd: result.cost_usd || 0,
+            total_tokens: result.total_tokens || 0,
+            llm_calls: result.llm_calls || 0,
+            confidence: null,
+            avg_similarity: avgSim !== null ? Number(avgSim.toFixed(3)) : null,
+            response_time: result.response_time || 0,
+          }
+          saveResearchLog([...loadResearchLog(), logEntry])
+        }
       } catch (e) {
         const err: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: `Error: ${e}`, timestamp: Date.now() }
         setMessages(prev => { const next = [...prev, err]; saveSessionMessages(sessionId, next); return next })
@@ -214,6 +237,24 @@ export function ChatTab({
       }
       const costs = loadCosts()
       saveCosts([...costs, costEntry])
+      // Research log — only when Research Mode is ON
+      if (researchMode) {
+        const now = new Date()
+        const logEntry: ResearchLogEntry = {
+          date: now.toLocaleDateString(),
+          time: now.toLocaleTimeString(),
+          query: q,
+          response: finalResult.answer || "",
+          mode: "Agentic",
+          cost_usd: finalResult.cost_usd || 0,
+          total_tokens: finalResult.total_tokens || 0,
+          llm_calls: finalResult.llm_calls || 0,
+          confidence: finalResult.confidence ?? null,
+          avg_similarity: null,
+          response_time: finalResult.response_time || 0,
+        }
+        saveResearchLog([...loadResearchLog(), logEntry])
+      }
     }
 
     setRunning(false)

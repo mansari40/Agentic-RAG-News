@@ -5,8 +5,8 @@ import {
   Tooltip, ResponsiveContainer, ScatterChart, Scatter, Cell,
   ComposedChart, ReferenceLine, BarChart, Bar,
 } from "recharts"
-import { loadCosts } from "../lib/storage"
-import type { QueryCostEntry } from "../lib/types"
+import { loadCosts, loadResearchLog, clearResearchLog } from "../lib/storage"
+import type { QueryCostEntry, ResearchLogEntry } from "../lib/types"
 import {
   TrendingUp, DollarSign, Zap, Clock, Download, Trash2,
   Activity, Database, Filter, Target, Layers,
@@ -102,12 +102,17 @@ function ColoredDot({ cx = 0, cy = 0, payload }: { cx?: number; cy?: number; pay
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-export function AnalyticsTab() {
+export function AnalyticsTab({ researchMode }: { researchMode: boolean }) {
   const [costs, setCosts] = useState<QueryCostEntry[]>([])
+  const [researchLog, setResearchLog] = useState<ResearchLogEntry[]>([])
 
   useEffect(() => {
     setCosts(loadCosts())
-    const interval = setInterval(() => setCosts(loadCosts()), 2000)
+    setResearchLog(loadResearchLog())
+    const interval = setInterval(() => {
+      setCosts(loadCosts())
+      setResearchLog(loadResearchLog())
+    }, 2000)
     return () => clearInterval(interval)
   }, [])
 
@@ -520,57 +525,102 @@ export function AnalyticsTab() {
         </div>
       </div>
 
-      {/* Query log table */}
-      <div className="card overflow-hidden">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold text-text">Query Log</h3>
-          <div className="flex gap-2">
-            <button onClick={exportCSV} className="btn-ghost text-xs flex items-center gap-1">
-              <Download size={11} /> Export CSV
-            </button>
-            <button
-              onClick={() => { localStorage.removeItem("timber_costs"); setCosts([]) }}
-              className="btn-ghost text-xs flex items-center gap-1 text-red-400"
-            >
-              <Trash2 size={11} /> Clear
-            </button>
+
+      {/* ── Research Log — visible only when Research Mode is ON ── */}
+      {researchMode && (
+        <div className="card overflow-hidden">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+            <div>
+              <h3 className="text-sm font-semibold text-text">Query Research Log</h3>
+              <p className="text-xs text-text-3 mt-0.5">Detailed log captured while Research Mode is ON</p>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  const header = "Date,Time,Query,Response,Mode,Cost ($),Tokens,LLM Calls,Confidence / Avg Similarity,Resp. Time (s)"
+                  const rows = researchLog.map(r =>
+                    [
+                      r.date,
+                      r.time,
+                      `"${r.query.replace(/"/g, '""')}"`,
+                      `"${r.response.replace(/"/g, '""')}"`,
+                      r.mode,
+                      r.cost_usd.toFixed(6),
+                      r.total_tokens,
+                      r.llm_calls,
+                      r.confidence !== null ? (r.confidence * 100).toFixed(1) + "%" : r.avg_similarity?.toFixed(3) ?? "N/A",
+                      r.response_time.toFixed(2),
+                    ].join(",")
+                  )
+                  const blob = new Blob([[header, ...rows].join("\n")], { type: "text/csv" })
+                  const a = document.createElement("a")
+                  a.href = URL.createObjectURL(blob)
+                  a.download = `timber_research_log_${Date.now()}.csv`
+                  a.click()
+                }}
+                className="btn-ghost text-xs flex items-center gap-1"
+              >
+                <Download size={11} /> Export CSV
+              </button>
+              <button
+                onClick={() => { clearResearchLog(); setResearchLog([]) }}
+                className="btn-ghost text-xs flex items-center gap-1 text-red-400"
+              >
+                <Trash2 size={11} /> Clear
+              </button>
+            </div>
           </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="bg-surface-2 border-b border-border">
-                {["Time", "Query", "Mode", "Cost ($)", "Tokens", "LLM Calls", "Confidence", "Resp. Time"].map(h => (
-                  <th key={h} className="px-3 py-2.5 text-left text-text-3 font-semibold whitespace-nowrap">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {[...costs].reverse().map((c, i) => {
-                const mode = modeOf(c)
-                return (
-                  <tr key={i} className="border-t border-border hover:bg-surface-2 transition-colors">
-                    <td className="px-3 py-2 font-mono text-text-3 whitespace-nowrap">{c.timestamp}</td>
-                    <td className="px-3 py-2 text-text-2 max-w-[200px] truncate">{c.query}</td>
-                    <td className="px-3 py-2">
-                      <span className={`badge ${mode === "Agentic" ? "badge-green" : "badge-blue"}`}>{mode}</span>
-                    </td>
-                    <td className="px-3 py-2 font-mono text-amber">${c.cost_usd.toFixed(6)}</td>
-                    <td className="px-3 py-2 font-mono text-blue">{c.total_tokens.toLocaleString()}</td>
-                    <td className="px-3 py-2 font-mono text-text-2 text-center">{c.llm_calls}</td>
-                    <td className="px-3 py-2 font-mono">
-                      <span className={c.confidence >= 0.65 ? "text-accent" : c.confidence >= 0.35 ? "text-amber" : "text-red"}>
-                        {(c.confidence * 100).toFixed(0)}%
-                      </span>
-                    </td>
-                    <td className="px-3 py-2 font-mono text-text-3">{c.response_time.toFixed(2)}s</td>
+
+          {researchLog.length === 0 ? (
+            <div className="px-4 py-8 text-center text-xs text-text-3">
+              No entries yet — run queries with Research Mode ON to populate this log.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-surface-2 border-b border-border">
+                    {["Date", "Time", "Query", "Response", "Mode", "Cost ($)", "Tokens", "LLM Calls", "Confidence / Avg Sim.", "Resp. Time"].map(h => (
+                      <th key={h} className="px-3 py-2.5 text-left text-text-3 font-semibold whitespace-nowrap">{h}</th>
+                    ))}
                   </tr>
-                )
-              })}
-            </tbody>
-          </table>
+                </thead>
+                <tbody>
+                  {[...researchLog].reverse().map((r, i) => (
+                    <tr key={i} className="border-t border-border hover:bg-surface-2 transition-colors align-top">
+                      <td className="px-3 py-2 font-mono text-text-3 whitespace-nowrap">{r.date}</td>
+                      <td className="px-3 py-2 font-mono text-text-3 whitespace-nowrap">{r.time}</td>
+                      <td className="px-3 py-2 text-text-2 max-w-[180px]">
+                        <span title={r.query}>{r.query}</span>
+                      </td>
+                      <td className="px-3 py-2 text-text-2 max-w-[140px]">
+                        <span title={r.response} className="cursor-help">
+                          {r.response.split(" ").slice(0, 5).join(" ")}…
+                        </span>
+                      </td>
+                      <td className="px-3 py-2">
+                        <span className={`badge ${r.mode === "Agentic" ? "badge-green" : "badge-blue"}`}>{r.mode}</span>
+                      </td>
+                      <td className="px-3 py-2 font-mono text-amber">${r.cost_usd.toFixed(6)}</td>
+                      <td className="px-3 py-2 font-mono text-blue">{r.total_tokens.toLocaleString()}</td>
+                      <td className="px-3 py-2 font-mono text-text-2 text-center">{r.llm_calls}</td>
+                      <td className="px-3 py-2 font-mono">
+                        {r.confidence !== null
+                          ? <span className={r.confidence >= 0.65 ? "text-accent" : r.confidence >= 0.35 ? "text-amber" : "text-red"}>
+                              {(r.confidence * 100).toFixed(0)}%
+                            </span>
+                          : <span className="text-text-3">{r.avg_similarity?.toFixed(3) ?? "—"}</span>
+                        }
+                      </td>
+                      <td className="px-3 py-2 font-mono text-text-3">{r.response_time.toFixed(2)}s</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
     </div>
   )

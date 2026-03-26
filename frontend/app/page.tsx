@@ -109,10 +109,11 @@ export default function Home() {
               dateFrom={dateFrom}
               dateTo={dateTo}
               sessionId={sessionId}
+              researchMode={researchMode}
             />
           </div>
           <div className={tab === "ab" ? "h-full" : "hidden"}><ABTestTab /></div>
-          <div className={tab === "analytics" ? "h-full" : "hidden"}><AnalyticsTab /></div>
+          <div className={tab === "analytics" ? "h-full" : "hidden"}><AnalyticsTab researchMode={researchMode} /></div>
           <div className={tab === "architecture" ? "h-full" : "hidden"}><ArchitectureTab /></div>
           <div className={tab === "help" ? "h-full" : "hidden"}><HelpTab /></div>
         </div>

@@ -1,9 +1,10 @@
-import type { Message, QueryCostEntry } from "./types"
+import type { Message, QueryCostEntry, ResearchLogEntry } from "./types"
 
 const MESSAGES_KEY = "timber_messages"
 const COSTS_KEY = "timber_costs"
 const CURRENT_SESSION_KEY = "timber_current_session"
 const SESSIONS_KEY = "timber_sessions"
+const RESEARCH_LOG_KEY = "timber_research_log"
 
 export interface ChatSession {
   id: string
@@ -94,6 +95,25 @@ export function saveCosts(costs: QueryCostEntry[]) {
   localStorage.setItem(COSTS_KEY, JSON.stringify(costs))
 }
 
+// ── Research log (saved only when Research Mode is ON) ────────────────────
+
+export function loadResearchLog(): ResearchLogEntry[] {
+  if (typeof window === "undefined") return []
+  try {
+    return JSON.parse(localStorage.getItem(RESEARCH_LOG_KEY) || "[]")
+  } catch { return [] }
+}
+
+export function saveResearchLog(entries: ResearchLogEntry[]) {
+  if (typeof window === "undefined") return
+  localStorage.setItem(RESEARCH_LOG_KEY, JSON.stringify(entries))
+}
+
+export function clearResearchLog() {
+  if (typeof window === "undefined") return
+  localStorage.removeItem(RESEARCH_LOG_KEY)
+}
+
 // ── Legacy helpers (kept for any external callers) ────────────────────────
 
 export function loadMessages(): Message[] {
@@ -111,6 +131,7 @@ export function clearAll() {
   localStorage.removeItem(COSTS_KEY)
   localStorage.removeItem(CURRENT_SESSION_KEY)
   localStorage.removeItem(SESSIONS_KEY)
+  localStorage.removeItem(RESEARCH_LOG_KEY)
   // Remove all session message keys
   const keysToRemove: string[] = []
   for (let i = 0; i < localStorage.length; i++) {

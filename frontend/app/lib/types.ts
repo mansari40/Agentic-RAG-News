@@ -61,6 +61,20 @@ export interface SSEEvent {
   message?: string
 }
 
+export interface ResearchLogEntry {
+  date: string
+  time: string
+  query: string
+  response: string
+  mode: string
+  cost_usd: number
+  total_tokens: number
+  llm_calls: number
+  confidence: number | null        // agentic only
+  avg_similarity: number | null    // baseline only
+  response_time: number
+}
+
 export interface QueryCostEntry {
   query: string
   cost_usd: number
