@@ -104,6 +104,7 @@ export function HelpTab() {
           {[
             ["Baseline mode",       "Use for fast, simple lookups from the local Vector DB knowledge base (~3 s, ~$0.0001)."],
             ["Agentic mode",        "Use when you need comprehensive, current, multi-source evidence across MediaStack, Tavily, and the Vector DB (~30 s, ~$0.03)."],
+            ["Research mode",       "Turn on to activate the Query Research Log in the Analytics tab to access logs of full queries, responses, and metrics for export and analysis."],
             ["A/B Test tab",        "Run both modes on the same query to see the difference in depth, sources, and cost."],
             ["Export button",       "Download the full answer, sources, cost breakdown, and key facts after any query."],
             ["Follow-up questions", "The pipeline remembers the last conversation turn - ask follow-ups naturally without repeating context."],
