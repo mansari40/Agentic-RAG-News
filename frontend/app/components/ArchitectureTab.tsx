@@ -17,9 +17,9 @@ const BASELINE_STEPS = [
 
 /* ── SVG geometry ── */
 const B_W = 980      // baseline svg width
-const B_H = 148
-const B_NODE_W = 108
-const B_NODE_H = 52
+const B_H = 180
+const B_NODE_W = 128
+const B_NODE_H = 64
 const B_GAP = 16     // gap between nodes
 const B_ARROW = 16
 const B_TOTAL = BASELINE_STEPS.length * B_NODE_W + (BASELINE_STEPS.length - 1) * (B_GAP + B_ARROW)
@@ -87,15 +87,13 @@ export function ArchitectureTab() {
       `}</style>
 
       {/* ═══════════════ BASELINE RAG ═══════════════ */}
-      <div className="card p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white">Baseline RAG Pipeline</h2>
-          <div className="flex gap-4 text-xs font-mono" style={{ color: "#64748b" }}>
-            <span>~3 s</span>
-            <span>1 LLM call</span>
-            <span>~$0.0001</span>
-          </div>
+      <div className="card p-5" style={{ borderLeft: "3px solid #3b82f6" }}>
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="text-sm font-bold" style={{ color: "#111827" }}>Baseline RAG Pipeline</h2>
         </div>
+        <p className="text-xs mb-4" style={{ color: "#64748b" }}>
+          Single-source retrieval from a local vector database using hybrid <strong style={{ color: "#94a3b8" }}>BM25 + dense vector</strong> search with RRF fusion, followed by a single LLM generation step.
+        </p>
 
         {/* SVG diagram */}
         <div className="overflow-x-auto">
@@ -212,9 +210,9 @@ export function ArchitectureTab() {
                     filter={glowFilter}
                   />
                   <text
-                    x={x + B_NODE_W / 2} y={B_CY - (step.sub ? 8 : 0)}
+                    x={x + B_NODE_W / 2} y={B_CY - (step.sub ? 10 : 0)}
                     textAnchor="middle"
-                    fontSize="11"
+                    fontSize="13"
                     fontWeight="700"
                     fill="#e2e8f0"
                     fontFamily="Inter, sans-serif"
@@ -223,9 +221,9 @@ export function ArchitectureTab() {
                   </text>
                   {step.sub && (
                     <text
-                      x={x + B_NODE_W / 2} y={B_CY + 10}
+                      x={x + B_NODE_W / 2} y={B_CY + 12}
                       textAnchor="middle"
-                      fontSize="8.5"
+                      fontSize="10"
                       fill="#94a3b8"
                       fontFamily="Inter, sans-serif"
                     >
@@ -250,39 +248,148 @@ export function ArchitectureTab() {
           </svg>
         </div>
 
-        {/* metrics */}
-        <div className="grid grid-cols-4 gap-2 mt-3">
-          {[["Avg Speed","2–5 s"],["Source Types","1"],["LLM Calls","1"],["Cost / Query","~$0.0001"]].map(([l,v]) => (
-            <div key={l} className="metric-card">
-              <span className="metric-value text-base">{v}</span>
-              <span className="metric-label">{l}</span>
-            </div>
+        <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: "1px solid #e5e7eb" }}>
+          {[["~3 sec","Speed"],["1 LLM","Call"],["~$0.0001","Cost"]].map(([val,label]) => (
+            <span key={label} className="text-xs px-2.5 py-0.5 rounded-md font-mono font-semibold"
+              style={{ background: "#e8f5e9", color: "#2e7d32" }}>
+              {val} <span style={{ fontWeight: 400, color: "#4caf50" }}>{label}</span>
+            </span>
           ))}
         </div>
+
       </div>
 
       {/* ═══════════════ AGENTIC RAG ═══════════════ */}
-      <div className="card p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-white">Agentic RAG Pipeline</h2>
+      <div className="card p-5" style={{ borderLeft: "3px solid #4ade80" }}>
+        <div className="flex items-center gap-2 mb-1">
+          <h2 className="text-sm font-bold" style={{ color: "#111827" }}>Agentic RAG Pipeline</h2>
         </div>
+        <p className="text-xs mb-4" style={{ color: "#64748b" }}>
+          Multi-agent LangGraph orchestration across <strong style={{ color: "#94a3b8" }}>three live sources</strong> - Tavily Specialist, MediaStack, and Tavily Web with LLM-based ranking, fact verification, answer synthesis, and an optional refinement loop.
+        </p>
 
         {/* SVG diagram */}
         <div className="overflow-x-auto">
           <AgenticSVG />
         </div>
 
-        {/* metrics */}
-        <div className="grid grid-cols-4 gap-2 mt-3">
-          {[["Avg Speed","20–50 s"],["Source Types","Up to 3"],["LLM Calls","6–8"],["Cost / Query","~$0.03"]].map(([l,v]) => (
-            <div key={l} className="metric-card">
-              <span className="metric-value text-base">{v}</span>
-              <span className="metric-label">{l}</span>
-            </div>
+        <div className="flex items-center gap-2 mt-3 pt-3" style={{ borderTop: "1px solid #e5e7eb" }}>
+          {[["20–50 sec","Speed"],["6–8 LLM","Calls"],["~$0.03","Cost"]].map(([val,label]) => (
+            <span key={label} className="text-xs px-2.5 py-0.5 rounded-md font-mono font-semibold"
+              style={{ background: "#e8f5e9", color: "#2e7d32" }}>
+              {val} <span style={{ fontWeight: 400, color: "#4caf50" }}>{label}</span>
+            </span>
           ))}
         </div>
 
       </div>
+
+      {/* ═══════════════ CLOUD INFRASTRUCTURE ═══════════════ */}
+      <div className="card p-5" style={{ borderLeft: "3px solid #38bdf8" }}>
+        <div className="flex items-center gap-2 mb-4">
+          <div style={{
+            width: 8, height: 8, borderRadius: "50%",
+            background: "#4ade80",
+            boxShadow: "0 0 6px #4ade80",
+            animation: "arch-pulse 2s ease-in-out infinite"
+          }} />
+          <h2 className="text-sm font-bold" style={{ color: "#111827" }}>
+            Cloud Infrastructure
+          </h2>
+          <span className="text-xs px-2 py-0.5 rounded-full font-mono"
+            style={{ background: "#0f2d1a", color: "#4ade80", border: "1px solid #166534" }}>
+            LIVE
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {/* Render */}
+          <div className="rounded-xl p-4" style={{
+            background: "linear-gradient(135deg, #0d1f2d 0%, #071521 100%)",
+            border: "1px solid #1e40af"
+          }}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="rounded-lg flex items-center justify-center text-base font-bold"
+                style={{ width: 32, height: 32, background: "#1e3a8a", color: "#93c5fd", border: "1px solid #3b82f6", fontSize: 14 }}>
+                R
+              </div>
+              <div>
+                <div className="text-sm font-bold" style={{ color: "#93c5fd" }}>Render</div>
+                <div className="text-xs" style={{ color: "#475569" }}>render.com</div>
+              </div>
+            </div>
+            <div className="text-xs leading-relaxed mb-3" style={{ color: "#94a3b8" }}>
+              Cloud application platform hosting both the <span style={{ color: "#e2e8f0", fontWeight: 600 }}>FastAPI backend</span> and <span style={{ color: "#e2e8f0", fontWeight: 600 }}>Next.js frontend</span> as separate web services.
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {["FastAPI", "Next.js", "Docker"].map(t => (
+                <span key={t} className="text-xs px-2 py-0.5 rounded font-mono"
+                  style={{ background: "#1e3a8a", color: "#93c5fd", border: "1px solid #1e40af" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Neon */}
+          <div className="rounded-xl p-4" style={{
+            background: "linear-gradient(135deg, #0c1f1a 0%, #071512 100%)",
+            border: "1px solid #065f46"
+          }}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="rounded-lg flex items-center justify-center text-base font-bold"
+                style={{ width: 32, height: 32, background: "#064e3b", color: "#6ee7b7", border: "1px solid #10b981", fontSize: 14 }}>
+                N
+              </div>
+              <div>
+                <div className="text-sm font-bold" style={{ color: "#6ee7b7" }}>Neon</div>
+                <div className="text-xs" style={{ color: "#475569" }}>neon.tech</div>
+              </div>
+            </div>
+            <div className="text-xs leading-relaxed mb-3" style={{ color: "#94a3b8" }}>
+              Serverless <span style={{ color: "#e2e8f0", fontWeight: 600 }}>PostgreSQL</span> database storing article metadata and the <span style={{ color: "#e2e8f0", fontWeight: 600 }}>BM25 keyword index</span> used by the hybrid retriever in Baseline RAG.
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {["PostgreSQL", "BM25 Index", "Serverless"].map(t => (
+                <span key={t} className="text-xs px-2 py-0.5 rounded font-mono"
+                  style={{ background: "#064e3b", color: "#6ee7b7", border: "1px solid #065f46" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Qdrant Cloud */}
+          <div className="rounded-xl p-4" style={{
+            background: "linear-gradient(135deg, #1a0d2e 0%, #110720 100%)",
+            border: "1px solid #7c3aed"
+          }}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="rounded-lg flex items-center justify-center text-base font-bold"
+                style={{ width: 32, height: 32, background: "#4c1d95", color: "#c4b5fd", border: "1px solid #7c3aed", fontSize: 14 }}>
+                Q
+              </div>
+              <div>
+                <div className="text-sm font-bold" style={{ color: "#c4b5fd" }}>Qdrant Cloud</div>
+                <div className="text-xs" style={{ color: "#475569" }}>cloud.qdrant.io</div>
+              </div>
+            </div>
+            <div className="text-xs leading-relaxed mb-3" style={{ color: "#94a3b8" }}>
+              Managed <span style={{ color: "#e2e8f0", fontWeight: 600 }}>vector database</span> (cluster: <span style={{ color: "#c4b5fd", fontFamily: "monospace" }}>Timber_intel</span>) storing dense embeddings of curated timber articles for semantic search.
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {["Vector DB", "Embeddings", "EU-central-1"].map(t => (
+                <span key={t} className="text-xs px-2 py-0.5 rounded font-mono"
+                  style={{ background: "#4c1d95", color: "#c4b5fd", border: "1px solid #7c3aed" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* connection legend */}
+        <div className="mt-4 pt-3 flex flex-wrap gap-4 text-xs" style={{ borderTop: "1px solid #1e293b", color: "#64748b" }}>
+          <span><span style={{ color: "#93c5fd" }}>●</span> Render → Neon: SQLAlchemy connection pool (hybrid retrieval)</span>
+          <span><span style={{ color: "#c4b5fd" }}>●</span> Render → Qdrant Cloud: REST API (vector similarity search)</span>
+          <span><span style={{ color: "#4ade80" }}>●</span> All services: EU-central-1 region</span>
+        </div>
+      </div>
+
     </div>
   )
 }
@@ -292,20 +399,20 @@ export function ArchitectureTab() {
 ────────────────────────────────────────────────────────────────────────────── */
 function AgenticSVG() {
   const W = 820
-  const H = 820
+  const H = 850
   const CX = W / 2
 
-  const Y_QUERY    = 48
-  const Y_PLANNER  = 118
-  const Y_SCOPE    = 200
-  const Y_ORCH     = 305
-  const Y_BUS_TOP  = 375
-  const Y_SOURCE   = 425
-  const Y_BUS_BOT  = 475
-  const Y_RANKER   = 542
-  const Y_VERIFIER = 614
-  const Y_SYNTH    = 690
-  const Y_ANSWER   = 760
+  const Y_QUERY    = 78
+  const Y_PLANNER  = 148
+  const Y_SCOPE    = 230
+  const Y_ORCH     = 335
+  const Y_BUS_TOP  = 405
+  const Y_SOURCE   = 455
+  const Y_BUS_BOT  = 505
+  const Y_RANKER   = 572
+  const Y_VERIFIER = 644
+  const Y_SYNTH    = 720
+  const Y_ANSWER   = 790
 
   const SRC_XS = [116, 312, 508, 704]
   const NODE_W = 150
@@ -440,7 +547,7 @@ function AgenticSVG() {
       {/* ── 1. QueryPlanner ── */}
       <NodeRect cx={CX} cy={Y_PLANNER} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgB)" stroke="#3b82f6" filter="url(#ag-gB)"
-        label="① QueryPlanner" sub="gpt-4o-mini" />
+        label="① Planner" sub="gpt-4o-mini" />
 
       {/* arrow: QueryPlanner → ScopeCheck */}
       <line x1={CX} y1={Y_PLANNER + NODE_H / 2} x2={CX} y2={Y_SCOPE - NODE_H / 2}
@@ -542,7 +649,7 @@ function AgenticSVG() {
       {/* ── 4. SourceRanker ── */}
       <NodeRect cx={CX} cy={Y_RANKER} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgP)" stroke="#a855f7" filter="url(#ag-gP)"
-        label="④ SourceRanker" sub="gpt-4o-mini · 40 → 20" />
+        label="④ Ranker" sub="gpt-4o-mini · 40 → 20" />
 
       {/* ranker → verifier */}
       <line x1={CX} y1={Y_RANKER + NODE_H / 2} x2={CX} y2={Y_VERIFIER - NODE_H / 2}
@@ -552,7 +659,7 @@ function AgenticSVG() {
       {/* ── 5. FactVerifier ── */}
       <NodeRect cx={CX} cy={Y_VERIFIER} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgGreen)" stroke="#4ade80" filter="url(#ag-gG)"
-        label="⑤ FactVerifier" sub="gpt-4o · reads 20 sources" />
+        label="⑤ Verifier" sub="gpt-4o · reads 20 sources" />
 
       {/* verifier → synthesizer */}
       <line x1={CX} y1={Y_VERIFIER + NODE_H / 2} x2={CX} y2={Y_SYNTH - NODE_H / 2}
@@ -562,7 +669,7 @@ function AgenticSVG() {
       {/* ── 6. AnswerSynthesizer ── */}
       <NodeRect cx={CX} cy={Y_SYNTH} w={NODE_W + 30} h={NODE_H}
         fill="url(#ag-lgI)" stroke="#818cf8" filter="url(#ag-gI)"
-        label="⑥ AnswerSynthesizer" sub="gpt-4o-mini · final answer" />
+        label="⑥ Synthesizer" sub="gpt-4o-mini · final answer" />
 
       {/* synthesizer → answer */}
       <line x1={CX} y1={Y_SYNTH + NODE_H / 2} x2={CX} y2={Y_ANSWER - NODE_H / 2}
