@@ -249,7 +249,8 @@ async def query_baseline_rag(request: QueryRequest) -> BaselineQueryResponse:
         sources = rag.retriever.retrieve(request.question, use_hybrid=request.use_hybrid)
         # Only pass relevant sources to the generator and return to the client.
         # Scores near zero mean the query has no match in the knowledge base.
-        MIN_SCORE = 0.10
+        # RRF hybrid scores top out at ~0.016; cosine vector scores range 0-1
+        MIN_SCORE = 0.005 if request.use_hybrid else 0.10
         relevant_sources = [s for s in sources[: request.top_k] if s.similarity_score >= MIN_SCORE]
         answer, total_tokens, cost_usd = rag.generator.generate(request.question, relevant_sources)
         # If the LLM signals it has no relevant information, suppress all sources.
