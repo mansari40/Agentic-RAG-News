@@ -5,6 +5,7 @@ then returns a shortlist of the best candidates so the Verifier doesn't have
 to read everything.
 """
 
+from datetime import date
 from typing import Any
 
 import structlog
@@ -58,11 +59,15 @@ class SourceRanker:
         candidates = sources[:max_to_rank]
         articles_text = self._format_for_ranking(candidates)
 
+        cutoff_date = (
+            state.get("cutoff_date_override") or agentic_settings.min_allowed_evidence_date
+        )
         prompt = RANKER_PROMPT.format(
             query=query,
-            count=len(candidates),
             top_n=top_n,
             articles=articles_text,
+            today=date.today().isoformat(),
+            cutoff_date=cutoff_date,
         )
 
         tokens_in, tokens_out, cost = 0, 0, 0.0
@@ -76,7 +81,11 @@ class SourceRanker:
                 agentic_settings.openai_output_cost_per_token,
             )
             raw = JsonOutputParser().parse(response.content)
-            indices = raw.get("ranked_indices", [])
+            # Support new ranked_articles format and old ranked_indices fallback
+            if "ranked_articles" in raw:
+                indices = [a["index"] for a in raw["ranked_articles"] if "index" in a]
+            else:
+                indices = raw.get("ranked_indices", [])
             if indices and isinstance(indices, list):
                 ranked = []
                 seen = set()
