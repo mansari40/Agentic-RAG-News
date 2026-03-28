@@ -72,8 +72,12 @@ Query type rules:
   a complete answer — e.g. "How has bark beetle affected sawmill capacity AND construction costs?"
   NOT for questions asking about a single subject, regulation, or policy, even a complex one
 - "simple": a factual definition, explanation, or background question with no recency requirement —
-  includes "what is X", "what does X cover", "define X", "how does X work", "which products does X regulate"
-  even when X is a regulation or policy (e.g. "What is the EUDR?" → simple, not multi_hop)
+  includes "what is X", "what does X cover", "define X", "how does X work", "which products does X regulate",
+  "what is the impact of X on Y", "what effect does X have on Y" — when asking for an explanation of a
+  known relationship, not current market data. The test: does answering this require live/recent data?
+  If no — it is simple.
+  Examples: "What is the EUDR?" → simple. "What is the bark beetle impact on timber supply?" → simple.
+  Contrast: "How has bark beetle affected prices in 2026?" → temporal (recency signal present)
 
 TASK 4 — Research mode
 Decide whether full live research is needed:
