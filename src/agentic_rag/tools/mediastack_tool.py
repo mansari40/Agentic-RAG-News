@@ -198,14 +198,15 @@ class MediaStackAPITool:
 
     def _build_keyword_plan(self, query: str) -> list[str]:
         """
-        Build a keyword list for the query, with the most specific terms first.
-        Max 13 keywords — enough to get good coverage without too many API calls.
+        Build a keyword list for the query.
+        Topic-matched keywords fill first; generic fillers take remaining slots.
+        Max 13 keywords — enough for good coverage without too many API calls.
         """
         q = query.lower()
-        specific: list[str] = []
-        broad: list[str] = []
+        topic: list[str] = []  # query-matched — highest priority, always first
+        filler: list[str] = []  # generic fallbacks — fill remaining slots only
 
-        # Add topic-specific keywords based on what the query is about
+        # --- Topic-triggered groups (all go into `topic`) ---
         if any(
             t in q
             for t in [
@@ -219,7 +220,7 @@ class MediaStackAPITool:
                 "compliance",
             ]
         ):
-            specific.extend(_KEYWORD_GROUPS["policy"])
+            topic.extend(_KEYWORD_GROUPS["policy"])
         if any(
             t in q
             for t in [
@@ -235,7 +236,7 @@ class MediaStackAPITool:
                 "kiefer",
             ]
         ):
-            specific.extend(_KEYWORD_GROUPS["price"])
+            topic.extend(_KEYWORD_GROUPS["price"])
         if any(
             t in q
             for t in [
@@ -251,9 +252,9 @@ class MediaStackAPITool:
                 "forstwirtschaft",
             ]
         ):
-            specific.extend(_KEYWORD_GROUPS["supply"])
+            topic.extend(_KEYWORD_GROUPS["supply"])
         if any(t in q for t in ["sawmill", "sägewerk", "sägeindustrie", "production"]):
-            specific.extend(_KEYWORD_GROUPS["sawmill"])
+            topic.extend(_KEYWORD_GROUPS["sawmill"])
         if any(
             t in q
             for t in [
@@ -267,9 +268,9 @@ class MediaStackAPITool:
                 "disruption",
             ]
         ):
-            specific.extend(_KEYWORD_GROUPS["trade"])
+            topic.extend(_KEYWORD_GROUPS["trade"])
         if any(t in q for t in ["pellet", "energy", "biomass", "biomasse", "heating", "heizung"]):
-            specific.extend(_KEYWORD_GROUPS["energy"])
+            topic.extend(_KEYWORD_GROUPS["energy"])
         if any(
             t in q
             for t in [
@@ -290,30 +291,38 @@ class MediaStackAPITool:
                 "einfluss",
             ]
         ):
-            specific.extend(_KEYWORD_GROUPS["outlook"])
-
-        # Always include price, species, and market terms — they're relevant to any timber query
-        specific.extend(_KEYWORD_GROUPS["price"])
-        specific.extend(_KEYWORD_GROUPS["species"])
-        specific.extend(_KEYWORD_GROUPS["market"])
-
-        # Construction demand is always relevant background context for timber market queries
-        broad.extend(_KEYWORD_GROUPS["construction"])
-
-        # Wider economic context — only fetch when the query explicitly asks about macro/demand
+            topic.extend(_KEYWORD_GROUPS["outlook"])
         if any(
             t in q
-            for t in ["demand", "nachfrage", "housing", "immobilien", "heizung", "trend", "outlook"]
+            for t in [
+                "housing",
+                "construction",
+                "wohnungsbau",
+                "baugenehmigung",
+                "neubau",
+                "holzbau",
+                "baukosten",
+                "baukonjunktur",
+                "building",
+            ]
         ):
-            broad.extend(_KEYWORD_GROUPS["context"])
+            topic.extend(_KEYWORD_GROUPS["construction"])
+        if any(
+            t in q for t in ["demand", "nachfrage", "immobilien", "heizung", "trend", "outlook"]
+        ):
+            topic.extend(_KEYWORD_GROUPS["context"])
 
-        # "Mass timber" reliably surfaces German Holzbau/CLT articles in English
-        broad.extend(_KEYWORD_GROUPS["fallback_en"])
+        # --- Generic fillers (only consume slots not already taken by topic keywords) ---
+        filler.extend(_KEYWORD_GROUPS["price"])
+        filler.extend(_KEYWORD_GROUPS["species"])
+        filler.extend(_KEYWORD_GROUPS["market"])
+        filler.extend(_KEYWORD_GROUPS["construction"])
+        filler.extend(_KEYWORD_GROUPS["fallback_en"])
 
-        # Deduplicate preserving order
+        # Deduplicate preserving order — topic first, fillers after
         seen: set[str] = set()
         plan: list[str] = []
-        for kw in specific + broad:
+        for kw in topic + filler:
             if kw.lower() not in seen:
                 seen.add(kw.lower())
                 plan.append(kw)
