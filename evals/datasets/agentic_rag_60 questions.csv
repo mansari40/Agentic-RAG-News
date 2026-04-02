@@ -1,4 +1,4 @@
-﻿ï»¿No.,Date,Time,Query,Response,query_type,Mode,Cost ($),Tokens,LLM Calls,Confidence / Avg Similarity,Resp. Time (s),context_1,context_2,context_3,context_4,context_5,context_6,context_7,context_8,ground_truth
+﻿No.,Date,Time,Query,Response,query_type,Mode,Cost ($),Tokens,LLM Calls,Confidence / Avg Similarity,Resp. Time (s),context_1,context_2,context_3,context_4,context_5,context_6,context_7,context_8,ground_truth
 21,3/30/2026,4:20:30 PM,What caused the recent decline in German housing construction starts?,"Headline Finding â German residential construction starts declined sharply at the start of 2026, driven by weak demand, persistently high construction and financing costs, and low permit numbers.
 
 According to the Federal Statistics Office and industry association Bauindustrie, real orders in Germanyâs construction sector fell by 4.3% year-on-year and 5.1% month-on-month in January 2026. Residential construction was particularly affected, with new orders dropping 15.5% compared to January 2025. The ZIA Spring Report confirms that weak demand and elevated costsâboth construction and financingâcontinued to weigh heavily on residential construction, leading to a substantial collapse of around 25% in the building construction production index by September 2025, a level last seen in early 2017.
@@ -890,97 +890,6 @@ Grafik zur mit einem Computer, einer MÃ¼nze und einem Sparschwein.
 ##
 
 ## Das sind die wichtigsten MaÃnahmen im Ãberblick:",,,,"No direct evidence confirms that rising electricity or gas costs negatively impacted German sawmill operating margins in Q1 2026. The German government implemented a permanent reduction in the electricity tax for the manufacturing sector and abolished the gas storage levy from 2026. These measures reduced electricity costs for over 600,000 industrial companies. Sawmill operating pressure in Q1 2026 was driven primarily by record high roundwood input costs not energy costs."
-33,3/30/2026,5:31:33 PM,How did European Central Bank interest rate decisions in early 2026 affect mortgage lending conditions in Germany and what impact has that had on structural timber demand?,"**Headline Finding** â Slightly decreasing ECB interest rates in early 2026 improved German mortgage affordability and availability, supporting a gradual recovery in structural timber demand.
-
-On 5 February 2026, the European Central Bank (ECB) decided to keep its three key interest rates unchanged, following a period of previous rate cuts that had already begun to support economic growth. The ECBâs official statement noted that the supportive effects of past interest rate reductions were underpinning growth, with inflation expected to stabilise at the 2% target in the medium term.
-
-Reporting from Forest Machine Magazine and TTJ in early 2026 confirms that mortgage affordability and availability in Germany have improved due to these slightly decreasing interest rates. While German mortgage rates are no longer at historic lows, they are not at crisis levels either, and banks are now pricing mortgages with a more normal cost of capital. Borrowers are planning with more realistic budgets, and fixed-rate mortgage products remain the norm, providing stability for households considering new purchases or refinancing.
-
-These improved lending conditions have led to a gradual increase in housing transactions, with some of the demand that âsat outâ the market in 2025 now re-entering in 2026. Sources suggest that this is translating into modest growth in both new-build activity and the refurbishment and repair sector. Timber-frame construction is gaining a larger share of the new-build market, supported by incoming regulations such as the Future Homes Standard, which favour timber for its thermal and carbon performance.
-
-Slightly decreasing ECB interest rates in early 2026 improved mortgage lending conditions in Germany, which according to industry reporting has directly contributed to a gradual recovery in structural timber demand, particularly in new-build and refurbishment segments.",multi_hop,Agentic,0.020263,26013,8,75.00%,83.03,"assume some of the demand that âsat it outâ in 2025 will now re-enter the market in 2026. Affordability and mortgage availability is improving with slightly decreasing interest rates, even if confidence is likely to be slower to recover.    While this may only point to a gradual increase in transactions, it is an increase nonetheless, with plenty of potential for refurbishments and repairs.    The new-build market is also forecast for modest growth under these conditions with timber-frame already taking an increased share. Incoming regulations, such as the Future Homes Standard, favour timberframeâs superior thermal and carbon performance.    With the Government investing 39bn into the Social and Affordable Housing programme and still banging the (frankly unbelievable) â1.5 million [...] | TTJ canvassed industry organisations and companies about their plans and predictions for the sector for the year ahead. Respondents identified challenges due to the wider economic situation and geopolitical tensions, but they also see market opportunities and continuing strong prospects for timber generally given its capacity for reinvention and its increasingly relevant environmental credentials.    David Hopkins, Chief Executive Timber Development UK   Modest Growth, Better Than None â¦    Last year saw some of the toughest trading conditions weâve seen since the financial crash and the impact of this, particularly ending with the collapse of one of the sectorâs largest trading groups, will cast a long shadow into 2026.    Nobody will be feeling over-confident going into this year, but [...] will be feeling over-confident going into this year, but there are some positive signs ahead amid the negative gloom. Most of the constituent parts of NTG have now been picked up by other, more stable, trading companies, thankfully saving many jobs in the process. And, it is a sign of the strength of the sector that weâve seen very few other failures during this period.    The lateness of the November budget was one of the main economic drags in the second half of 2025, with multiple false flag announcements causing uncertainty across the economy.    With that out of the way though, the housing market â a key driver for the timber sector â starts the year in a relatively stable position. It may be from a very low base, but we can assume some of the demand that âsat it outâ in 2025 will","# Monetary policy decisions
-
-5 February 2026
-
-The Governing Council today decided to keep the three key ECB interest rates unchanged. Its updated assessment reconfirms that inflation should stabilise at its 2% target in the medium term.The economy remains resilient in a challenging global environment. Low unemployment, solid private sector balance sheets, the gradual rollout of public spending on defence and infrastructure and the supportive effects of the past interest rate cuts are underpinning growth. At the same time, the outlook is still uncertain, owing particularly to ongoing global trade policy uncertainty and geopolitical tensions.","Timber Industry News
-
-Timber Industry News
-
-Daily updates on the state of the timber markets, delivered straight to your inbox.
-
-January 20, 2026
-
-Germanyâs timber market in 2026: high prices, tight supply and a fragile balance
-
-# Germanyâs timber market in 2026: high prices, tight supply and a fragile balance
-
-### Register for unlimited access
-
-We work hard to bring you the latest news in the world of international wood industry. The article you are currently reading is available only to registered users.
-
-By registering you gain access to:
-
-#
-
-## Related
-
-March 26, 2026
-
-March 26, 2026
-
-March 26, 2026
-
-March 26, 2026
-
-March 26, 2026
-
-March 26, 2026
-
-March 25, 2026
-
-March 25, 2026
-
-March 25, 2026
-
-March 25, 2026
-
-### Newsletter [...] March 25, 2026
-
-March 25, 2026
-
-### Newsletter
-
-Daily updates on the state of the timber markets, delivered straight to your inbox.
-
-#### Category
-
-#### Follow us
-
-Â© 2025 Timber Industry News. All rights reserved.
-
-#### Privacy Overview","With that out of the way though, the housing market â a key driver for the timber sector â starts the year in a relatively stable position. It may be from a very low base, but we can assume some of the demand that âsat it outâ in 2025 will now re-enter the market in 2026. Affordability and mortgage availability is improving with slightly decreasing interest rates, even if confidence is likely to be slower to recover.
-
-While this may only point to a gradual increase in transactions, it is an increase nonetheless, with plenty of potential for refurbishments and repairs. [...] There is now a clear shortfall between the Governmentâs housing ambition and its delivery. It isnât easy to see how the original 1.5 million target can be achieved unless this is tackled head-on, but the BMF will continue to press for measures to unlock the new housing market.
-
-That said, with interest rates continuing to fall, we do anticipate market growth both in new build and RMI by the second half of 2026. To ensure BMF members are in the best position to take advantage of this, we continue to invest in initiatives to support their business. [...] In 2026 we expect steady, demand-led growth as construction stabilizes, and mass timber solutions continue gaining traction, albeit with price volatility and supply chain complexity still possible. A major factor will be the EUDR: the European Council and Parliament have now backed a one-year delay to 30 Dec 2026 for large/ medium operators and 30 Jun 2027 for micro/small operators, with adoption of targeted simplifications. We welcome clarity on timelines while continuing to invest in robust due diligence, geolocation data and supplier auditing. In the meantime, the EU Timber Regulation remains valid for all timber companies and competent authorities in Europe will police compliance for this for another year!","## Germany mortgage rates 2026 overview
-
-Germany mortgage rates in 2026 are no longer anchored near zero, but they are also not in a panic zone. The market has adapted. Banks price mortgages with a more normal cost of capital, and borrowers plan with more realistic budgets. In plain terms, the conversation in 2026 is less about shock and more about structure.
-
-Most mortgages in Germany are built around fixed interest periods. That is why people often search for fixed rate mortgage Germany 2026, ten year mortgage rate Germany, or fifteen year fixed mortgage Germany. German borrowers typically value stability. This matters because the best mortgage strategy in 2026 depends on the length of your fixation period, your down payment, and how much buffer you keep in your monthly budget. [...] If you can only afford your purchase in the optimistic range, you are betting on rate timing. That is fragile. If your budget works in the base case range and still survives the pessimistic range with a smaller buffer, you have a resilient plan. In German real estate financing, resilience often beats perfect timing.
-
-## Fixed rate versus variable mortgage rates Germany 2026
-
-### Fixed rate mortgage Germany 2026
-
-Fixed rate mortgages dominate in Germany because they reduce uncertainty. Ten year, fifteen year, and twenty year fixed periods are common. In 2026, many buyers prefer longer fixation because it makes monthly costs predictable and protects against a rate rebound. [...] ### Inflation expectations and long term confidence
-
-Inflation is not just a statistic. It is the story lenders tell themselves about the next decade. If inflation expectations are stable, long term rates tend to stabilize too. If inflation expectations rise again, long term rates can climb quickly, even if short term data looks calm.
-
-### Bond yields and the Pfandbrief channel
-
-German mortgage lending is closely connected to long term bond yields and the Pfandbrief market. Pfandbriefe are covered bonds used to fund mortgages. When long term yields move, mortgage pricing moves. This is one reason the German mortgage market prefers fixed interest periods and conservative underwriting.
-
-### Bank risk premiums and borrower profile",,,,On 5 February 2026 the ECB kept its key interest rates unchanged following prior rate cuts. German mortgage affordability and availability improved with slightly decreasing interest rates in early 2026. The housing market started 2026 in a relatively stable position with demand that sat out in 2025 beginning to re-enter the market. German mortgage rates in 2026 are no longer near zero but are not at panic levels. A gradual increase in housing transactions is expected with timber frame taking increased market share.
 34,3/30/2026,6:11:38 PM,What timber price movements were reported in Germany in February 2026?,"**Headline Finding** â Timber prices in Germany continued to rise sharply in February 2026, with both roundwood and firewood reaching new highs across multiple assortments.
 
 In February 2026, German sawn softwood roundwood prices remained at record levels. According to a market report published on 18 February 2026, the national average price for pine (Kiefer, classes A, B, C, 2a+) reached â¬90 per solid cubic meter, with a monthly increase of approximately â¬2. The same report notes that pine logs in some regions, such as Lower Austria, were sold for up to â¬100 per cubic meter. This upward movement is attributed to strong demand, particularly for spruce, which has also driven up pine prices. Earlier reporting from January 2026 confirms that spruce B 2b+ net prices averaged between â¬129 and â¬132 per solid cubic meter, while pine wood in the B/C grade fetched â¬95 to â¬98 per cubic meter, representing a year-on-year increase of â¬25â30 for forest owners.
@@ -1919,6 +1828,97 @@ Damit werden den Walbesitzern an der âWaldstraÃeâ etwa 25 Euro bis 
 Entstanden ist die extreme Knappheit offenbar durch das sehr geringe Angebot an sogenanntem Schadholz â das laut Landesanstalt fÃ¼r Wald und Forstwirtschaft in Bayern gut die HÃ¤lfte des Holzeinschlags ausmacht und damit auch die HÃ¤lfte des Angebots abgedeckt. Dieses Holz fehlt jetzt am Markt, der preislich kaum noch zwischen KÃ¤ferholz/Schadholz und unbeschadetem Holz unterscheidet.
 
 Holzlager-im-Wald-AdobeStock_793198684",,,,,,German sawmills are experiencing acute roundwood shortages and record prices in Q1 2026 but no source confirms storm events as a direct cause. The shortage is driven by low salvage wood volumes from bark beetle damage and prior storms combined with cold winter increasing firewood demand. Sawmills are warning of potential production stoppages if the supply situation does not improve. Future storm events could provide additional salvage wood but also add uncertainty to supply projections.
+33,3/30/2026,5:31:33 PM,How did European Central Bank interest rate decisions in early 2026 affect mortgage lending conditions in Germany and what impact has that had on structural timber demand?,"**Headline Finding** â Slightly decreasing ECB interest rates in early 2026 improved German mortgage affordability and availability, supporting a gradual recovery in structural timber demand.
+
+On 5 February 2026, the European Central Bank (ECB) decided to keep its three key interest rates unchanged, following a period of previous rate cuts that had already begun to support economic growth. The ECBâs official statement noted that the supportive effects of past interest rate reductions were underpinning growth, with inflation expected to stabilise at the 2% target in the medium term.
+
+Reporting from Forest Machine Magazine and TTJ in early 2026 confirms that mortgage affordability and availability in Germany have improved due to these slightly decreasing interest rates. While German mortgage rates are no longer at historic lows, they are not at crisis levels either, and banks are now pricing mortgages with a more normal cost of capital. Borrowers are planning with more realistic budgets, and fixed-rate mortgage products remain the norm, providing stability for households considering new purchases or refinancing.
+
+These improved lending conditions have led to a gradual increase in housing transactions, with some of the demand that âsat outâ the market in 2025 now re-entering in 2026. Sources suggest that this is translating into modest growth in both new-build activity and the refurbishment and repair sector. Timber-frame construction is gaining a larger share of the new-build market, supported by incoming regulations such as the Future Homes Standard, which favour timber for its thermal and carbon performance.
+
+Slightly decreasing ECB interest rates in early 2026 improved mortgage lending conditions in Germany, which according to industry reporting has directly contributed to a gradual recovery in structural timber demand, particularly in new-build and refurbishment segments.",multi_hop,Agentic,0.020263,26013,8,75.00%,83.03,"assume some of the demand that âsat it outâ in 2025 will now re-enter the market in 2026. Affordability and mortgage availability is improving with slightly decreasing interest rates, even if confidence is likely to be slower to recover.    While this may only point to a gradual increase in transactions, it is an increase nonetheless, with plenty of potential for refurbishments and repairs.    The new-build market is also forecast for modest growth under these conditions with timber-frame already taking an increased share. Incoming regulations, such as the Future Homes Standard, favour timberframeâs superior thermal and carbon performance.    With the Government investing 39bn into the Social and Affordable Housing programme and still banging the (frankly unbelievable) â1.5 million [...] | TTJ canvassed industry organisations and companies about their plans and predictions for the sector for the year ahead. Respondents identified challenges due to the wider economic situation and geopolitical tensions, but they also see market opportunities and continuing strong prospects for timber generally given its capacity for reinvention and its increasingly relevant environmental credentials.    David Hopkins, Chief Executive Timber Development UK   Modest Growth, Better Than None â¦    Last year saw some of the toughest trading conditions weâve seen since the financial crash and the impact of this, particularly ending with the collapse of one of the sectorâs largest trading groups, will cast a long shadow into 2026.    Nobody will be feeling over-confident going into this year, but [...] will be feeling over-confident going into this year, but there are some positive signs ahead amid the negative gloom. Most of the constituent parts of NTG have now been picked up by other, more stable, trading companies, thankfully saving many jobs in the process. And, it is a sign of the strength of the sector that weâve seen very few other failures during this period.    The lateness of the November budget was one of the main economic drags in the second half of 2025, with multiple false flag announcements causing uncertainty across the economy.    With that out of the way though, the housing market â a key driver for the timber sector â starts the year in a relatively stable position. It may be from a very low base, but we can assume some of the demand that âsat it outâ in 2025 will","# Monetary policy decisions
+
+5 February 2026
+
+The Governing Council today decided to keep the three key ECB interest rates unchanged. Its updated assessment reconfirms that inflation should stabilise at its 2% target in the medium term.The economy remains resilient in a challenging global environment. Low unemployment, solid private sector balance sheets, the gradual rollout of public spending on defence and infrastructure and the supportive effects of the past interest rate cuts are underpinning growth. At the same time, the outlook is still uncertain, owing particularly to ongoing global trade policy uncertainty and geopolitical tensions.","Timber Industry News
+
+Timber Industry News
+
+Daily updates on the state of the timber markets, delivered straight to your inbox.
+
+January 20, 2026
+
+Germanyâs timber market in 2026: high prices, tight supply and a fragile balance
+
+# Germanyâs timber market in 2026: high prices, tight supply and a fragile balance
+
+### Register for unlimited access
+
+We work hard to bring you the latest news in the world of international wood industry. The article you are currently reading is available only to registered users.
+
+By registering you gain access to:
+
+#
+
+## Related
+
+March 26, 2026
+
+March 26, 2026
+
+March 26, 2026
+
+March 26, 2026
+
+March 26, 2026
+
+March 26, 2026
+
+March 25, 2026
+
+March 25, 2026
+
+March 25, 2026
+
+March 25, 2026
+
+### Newsletter [...] March 25, 2026
+
+March 25, 2026
+
+### Newsletter
+
+Daily updates on the state of the timber markets, delivered straight to your inbox.
+
+#### Category
+
+#### Follow us
+
+Â© 2025 Timber Industry News. All rights reserved.
+
+#### Privacy Overview","With that out of the way though, the housing market â a key driver for the timber sector â starts the year in a relatively stable position. It may be from a very low base, but we can assume some of the demand that âsat it outâ in 2025 will now re-enter the market in 2026. Affordability and mortgage availability is improving with slightly decreasing interest rates, even if confidence is likely to be slower to recover.
+
+While this may only point to a gradual increase in transactions, it is an increase nonetheless, with plenty of potential for refurbishments and repairs. [...] There is now a clear shortfall between the Governmentâs housing ambition and its delivery. It isnât easy to see how the original 1.5 million target can be achieved unless this is tackled head-on, but the BMF will continue to press for measures to unlock the new housing market.
+
+That said, with interest rates continuing to fall, we do anticipate market growth both in new build and RMI by the second half of 2026. To ensure BMF members are in the best position to take advantage of this, we continue to invest in initiatives to support their business. [...] In 2026 we expect steady, demand-led growth as construction stabilizes, and mass timber solutions continue gaining traction, albeit with price volatility and supply chain complexity still possible. A major factor will be the EUDR: the European Council and Parliament have now backed a one-year delay to 30 Dec 2026 for large/ medium operators and 30 Jun 2027 for micro/small operators, with adoption of targeted simplifications. We welcome clarity on timelines while continuing to invest in robust due diligence, geolocation data and supplier auditing. In the meantime, the EU Timber Regulation remains valid for all timber companies and competent authorities in Europe will police compliance for this for another year!","## Germany mortgage rates 2026 overview
+
+Germany mortgage rates in 2026 are no longer anchored near zero, but they are also not in a panic zone. The market has adapted. Banks price mortgages with a more normal cost of capital, and borrowers plan with more realistic budgets. In plain terms, the conversation in 2026 is less about shock and more about structure.
+
+Most mortgages in Germany are built around fixed interest periods. That is why people often search for fixed rate mortgage Germany 2026, ten year mortgage rate Germany, or fifteen year fixed mortgage Germany. German borrowers typically value stability. This matters because the best mortgage strategy in 2026 depends on the length of your fixation period, your down payment, and how much buffer you keep in your monthly budget. [...] If you can only afford your purchase in the optimistic range, you are betting on rate timing. That is fragile. If your budget works in the base case range and still survives the pessimistic range with a smaller buffer, you have a resilient plan. In German real estate financing, resilience often beats perfect timing.
+
+## Fixed rate versus variable mortgage rates Germany 2026
+
+### Fixed rate mortgage Germany 2026
+
+Fixed rate mortgages dominate in Germany because they reduce uncertainty. Ten year, fifteen year, and twenty year fixed periods are common. In 2026, many buyers prefer longer fixation because it makes monthly costs predictable and protects against a rate rebound. [...] ### Inflation expectations and long term confidence
+
+Inflation is not just a statistic. It is the story lenders tell themselves about the next decade. If inflation expectations are stable, long term rates tend to stabilize too. If inflation expectations rise again, long term rates can climb quickly, even if short term data looks calm.
+
+### Bond yields and the Pfandbrief channel
+
+German mortgage lending is closely connected to long term bond yields and the Pfandbrief market. Pfandbriefe are covered bonds used to fund mortgages. When long term yields move, mortgage pricing moves. This is one reason the German mortgage market prefers fixed interest periods and conservative underwriting.
+
+### Bank risk premiums and borrower profile",,,,On 5 February 2026 the ECB kept its key interest rates unchanged following prior rate cuts. German mortgage affordability and availability improved with slightly decreasing interest rates in early 2026. The housing market started 2026 in a relatively stable position with demand that sat out in 2025 beginning to re-enter the market. German mortgage rates in 2026 are no longer near zero but are not at panic levels. A gradual increase in housing transactions is expected with timber frame taking increased market share.
 46,3/30/2026,7:13:29 PM,How has bark beetle damage reduced usable spruce quality in German forests and how has that affected sawmill input costs in Q1 2026?,"**Headline Finding** â Bark beetle outbreaks have sharply reduced usable spruce quality in German forests, driving Q1 2026 sawlog prices to â¬130â135/Fm and forcing sawmills to pay record input costs even for lower grades.
 
 Sources confirm that bark beetle infestations have caused a significant decline in the quality and availability of spruce in German forests, with some regions such as the Harz reporting over 90% of spruce stands dead or dying. This has led to a marked reduction in the volume of usable, high-grade spruce logs available for harvest and sale. As a result, sawmills are increasingly forced to accept lower quality logs, including those affected by bark beetle damage.
