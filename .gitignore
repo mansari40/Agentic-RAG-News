@@ -29,6 +29,11 @@ uv.lock
 # COVERAGE
 htmlcov/
 
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
 # EDITOR / OS
 .vscode/
 .idea/
